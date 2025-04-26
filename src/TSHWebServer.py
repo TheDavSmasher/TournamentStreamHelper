@@ -1,21 +1,18 @@
 import html
+import logging
 import os
 import traceback
-from qtpy.QtGui import *
-from qtpy.QtWidgets import *
-from qtpy.QtCore import *
+
+import orjson
 from flask import Flask, send_from_directory, request
 from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
-import orjson
 from loguru import logger
-from .TSHWebServerActions import WebServerActions
-from .TSHScoreboardManager import TSHScoreboardManager
-from .TSHTournamentDataProvider import TSHTournamentDataProvider
-from .TSHCommentaryWidget import TSHCommentaryWidget
-import traceback
+from qtpy.QtCore import *
 
-import logging
+from .TSHCommentaryWidget import TSHCommentaryWidget
+from .TSHScoreboardManager import TSHScoreboardManager
+from .TSHWebServerActions import WebServerActions
 
 log = logging.getLogger('socketio.server')
 log.setLevel(logging.ERROR)
