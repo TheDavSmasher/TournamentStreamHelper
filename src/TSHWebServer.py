@@ -20,6 +20,7 @@ log = logging.getLogger('socketio.server')
 log.setLevel(logging.ERROR)
 
 
+# noinspection PyMethodParameters, PyTypeChecker
 class WebServer(QThread):
     app = Flask(__name__, static_folder=os.path.curdir)
     cors = CORS(app)
@@ -337,7 +338,7 @@ class WebServer(QThread):
         emit('stats_last_sets',
              WebServer.actions.stats_last_sets(info.get("scoreboardNumber", "1"), info.get("player")))
 
-   # Resubmits Call for History Sets
+    # Resubmits Call for History Sets
     @app.route('/scoreboard<scoreboardNumber>-stats-history-sets-<player>')
     def stats_history_sets(scoreboardNumber, player):
         return WebServer.actions.stats_history_sets(scoreboardNumber, player)
@@ -509,8 +510,8 @@ class WebServer(QThread):
     @cross_origin()
     def test(filename):
         try:
-            filename = filename or 'stage_strike_app/build/index.html'
-            return send_from_directory(os.path.abspath('.'), filename, as_attachment=filename.endswith('.gz'))
+            filename_path = filename or 'stage_strike_app/build/index.html'
+            return send_from_directory(os.path.abspath('.'), filename_path, as_attachment=filename_path.endswith('.gz'))
         except Exception as e:
             logger.error(f"File not found: {e}")
 
