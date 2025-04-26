@@ -16,6 +16,7 @@ from .TSHCommentaryWidget import TSHCommentaryWidget
 import traceback
 
 import logging
+
 log = logging.getLogger('socketio.server')
 log.setLevel(logging.ERROR)
 
@@ -34,7 +35,7 @@ class WebServer(QThread):
     app.config['CORS_HEADERS'] = 'Content-Type'
     actions = None
 
-    def __init__(self, parent=None, stageWidget=None, commentaryWidget: TSHCommentaryWidget=None) -> None:
+    def __init__(self, parent=None, stageWidget=None, commentaryWidget: TSHCommentaryWidget = None) -> None:
         super().__init__(parent)
         WebServer.actions = WebServerActions(
             parent=parent,
@@ -44,7 +45,7 @@ class WebServer(QThread):
         )
         self.host_name = "0.0.0.0"
         self.port = 5000
-        
+
     @app.route('/program-state')
     def program_state():
         return WebServer.actions.program_state()
@@ -225,21 +226,21 @@ class WebServer(QThread):
                  data.get("team"),
                  data.get("player"),
                  data
-            ))
+             ))
 
     @app.post('/update-commentary-<caster>')
     def set_commentary_data(caster):
         data = request.get_json()
         return WebServer.actions.set_commentary_data(caster, data)
-    
+
     @socketio.on('update_commentary')
     def ws_set_commentary_data(message):
         data = orjson.loads(message)
-        emit('update_commentary', 
-            WebServer.actions.set_commentary_data(
-                data.get("commentator"),
-                data
-            ))
+        emit('update_commentary',
+             WebServer.actions.set_commentary_data(
+                 data.get("commentator"),
+                 data
+             ))
 
     # Get characters
     @app.route('/characters')
@@ -401,7 +402,7 @@ class WebServer(QThread):
     @socketio.on('get_sets')
     def ws_get_sets(message):
         emit('get_sets', WebServer.actions.get_sets(orjson.loads(message)))
-        
+
     # Loads info on a match
     @app.route('/get-match-<setId>')
     def get_match(setId):
@@ -464,7 +465,8 @@ class WebServer(QThread):
         if request.args.get('tag') is None:
             return "No tag provided"
         no_mains = request.args.get('no-mains') is not None
-        return WebServer.actions.load_player_from_tag(scoreboardNumber, html.unescape(request.args.get('tag')), team, player, no_mains)
+        return WebServer.actions.load_player_from_tag(scoreboardNumber, html.unescape(request.args.get('tag')), team,
+                                                      player, no_mains)
 
     @socketio.on('load_player_from_tag')
     def ws_load_player_from_tag(message):
@@ -494,7 +496,8 @@ class WebServer(QThread):
             return
         no_mains = args.get('no-mains') is not None
         caster = args.get('commentator')
-        emit('load_commentator_from_tag', WebServer.actions.load_commentator_from_tag(caster, html.unescape(args.get('tag')), no_mains))
+        emit('load_commentator_from_tag',
+             WebServer.actions.load_commentator_from_tag(caster, html.unescape(args.get('tag')), no_mains))
 
     # Update bracket
     @app.route('/set-tournament')
