@@ -29,7 +29,7 @@ class WebServerActions(QThread):
         self.stageWidget = stageWidget
         self.commentaryWidget = commentaryWidget
         self.threadPool = QThreadPool()
-        self.obsws = OBSWebsocketManager()
+        self.obs_ws = OBSWebsocketManager()
 
     def program_state(self):
         return StateManager.state
