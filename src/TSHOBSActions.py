@@ -17,8 +17,6 @@ class AppOption(SuperEnum):
     MATCH = "match"
     META = "meta", MetaOptions
 
-    META: MetaOptions
-
 
 class OBSActions:
     def __init__(self):
