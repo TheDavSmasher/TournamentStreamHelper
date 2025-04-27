@@ -75,7 +75,7 @@ class OBSWebsocketManager:
     # The transform should be a dictionary containing any of the following keys with corresponding values
     # positionX, positionY, scaleX, scaleY, rotation, width, height, sourceWidth, sourceHeight, cropTop, cropBottom, cropLeft, cropRight
     # e.g. {"scaleX": 2, "scaleY": 2.5}
-    # Note: there are other transform settings, like alignment, etc, but these feel like the main useful ones.
+    # Note: there are other transform settings, like alignment, etc., but these feel like the main useful ones.
     # Use get_source_transform to see the full list
     def set_source_transform(self, scene_name, source_name, new_transform):
         response = self.ws.call(requests.GetSceneItemId(sceneName=scene_name, sourceName=source_name))
@@ -95,71 +95,3 @@ class OBSWebsocketManager:
     # Get list of all items in a certain scene
     def get_scene_items(self, scene_name):
         return self.ws.call(requests.GetSceneItemList(sceneName=scene_name))
-
-
-if __name__ == '__main__':
-    print("Connecting to OBS Websockets")
-    obswebsockets_manager = OBSWebsocketManager()
-
-    print("Changing visibility on a source \n\n")
-    obswebsockets_manager.set_source_visibility('*** Mid Monitor', "Elgato Cam Link", False)
-    time.sleep(3)
-    obswebsockets_manager.set_source_visibility('*** Mid Monitor', "Elgato Cam Link", True)
-    time.sleep(3)
-
-    print("\nEnabling filter on a scene...\n")
-    time.sleep(3)
-    obswebsockets_manager.set_filter_visibility("/// TTS Characters", "Move Source - Godrick - Up", True)
-    time.sleep(3)
-    obswebsockets_manager.set_filter_visibility("/// TTS Characters", "Move Source - Godrick - Down", True)
-    time.sleep(5)
-
-    print("Swapping scene!")
-    obswebsockets_manager.set_scene('*** Camera (Wide)')
-    time.sleep(3)
-    print("Swapping back! \n\n")
-    obswebsockets_manager.set_scene('*** Mid Monitor')
-
-    print("Changing visibility on scroll filter and Audio Move filter \n\n")
-    obswebsockets_manager.set_filter_visibility("Line In", "Audio Move - Chat God", True)
-    obswebsockets_manager.set_filter_visibility("Middle Monitor", "DS3 - Scroll", True)
-    time.sleep(3)
-    obswebsockets_manager.set_filter_visibility("Line In", "Audio Move - Chat God", False)
-    obswebsockets_manager.set_filter_visibility("Middle Monitor", "DS3 - Scroll", False)
-
-    print("Getting a text source's current text! \n\n")
-    current_text = obswebsockets_manager.get_text("??? Challenge Title ???")
-    print(f"Here's its current text: {current_text}\n\n")
-
-    print("Changing a text source's text! \n\n")
-    obswebsockets_manager.set_text("??? Challenge Title ???", "Here's my new text!")
-    time.sleep(3)
-    obswebsockets_manager.set_text("??? Challenge Title ???", current_text)
-    time.sleep(1)
-
-    print("Getting a source's transform!")
-    transform = obswebsockets_manager.get_source_transform('*** Mid Monitor', "Middle Monitor")
-    print(f"Here's the transform: {transform}\n\n")
-
-    print("Setting a source's transform!")
-    new_transform = {"scaleX": 2, "scaleY": 2}
-    obswebsockets_manager.set_source_transform('*** Mid Monitor', "Middle Monitor", new_transform)
-    time.sleep(3)
-    print("Setting the transform back. \n\n")
-    obswebsockets_manager.set_source_transform('*** Mid Monitor', "Middle Monitor", transform)
-
-    response = obswebsockets_manager.get_input_settings("??? Challenge Title ???")
-    print(f"\nHere are the input settings:{response}\n")
-    time.sleep(2)
-
-    response = obswebsockets_manager.get_input_kind_list()
-    print(f"\nHere is the input kind list:{response}\n")
-    time.sleep(2)
-
-    response = obswebsockets_manager.get_scene_items('*** Mid Monitor')
-    print(f"\nHere is the scene's item list:{response}\n")
-    time.sleep(2)
-
-    time.sleep(300)
-
-#############################################
