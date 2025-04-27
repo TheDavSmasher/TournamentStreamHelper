@@ -9,13 +9,13 @@ class OBSWebsocketManager:
 
     def __init__(self):
         self.ws = obsws(WEBSOCKET_HOST, WEBSOCKET_PORT, WEBSOCKET_PASSWORD)
+
+    def connect(self) -> bool:
         try:
             self.ws.connect()
-        except:
-            print("Connection failed")
-            time.sleep(2)
-            sys.exit()
-        print("Connected to OBS Websockets!\n")
+        except Exception:
+            return False
+        return True
 
     def disconnect(self):
         self.ws.disconnect()
