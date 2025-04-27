@@ -1,23 +1,22 @@
+import logging
 import os
 import re
+
+import orjson
+from loguru import logger
+from qtpy.QtCore import *
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
-from qtpy.QtCore import *
-import orjson
 
-from .OBS.TSHOBSWebsockets import OBSWebsocketManager
-from .StateManager import StateManager
-from .TSHStatsUtil import TSHStatsUtil
 from .SettingsManager import SettingsManager
-from loguru import logger
-from .TSHGameAssetManager import TSHGameAssetManager
-from .TSHBracketView import TSHBracketView
-from .TSHBracketWidget import TSHBracketWidget
-from .TSHTournamentDataProvider import TSHTournamentDataProvider
+from .StateManager import StateManager
 from .TSHCommentaryWidget import TSHCommentaryWidget
+from .TSHGameAssetManager import TSHGameAssetManager
+from .TSHOBSActions import OBSActions
+from .TSHStatsUtil import TSHStatsUtil
+from .TSHTournamentDataProvider import TSHTournamentDataProvider
 from .Workers import Worker
 
-import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
@@ -29,7 +28,7 @@ class WebServerActions(QThread):
         self.stageWidget = stageWidget
         self.commentaryWidget = commentaryWidget
         self.threadPool = QThreadPool()
-        self.obs_ws = OBSWebsocketManager()
+        self.obs = OBSActions()
 
     def program_state(self):
         return StateManager.state
