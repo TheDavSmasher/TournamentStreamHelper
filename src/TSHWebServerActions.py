@@ -12,7 +12,7 @@ from .SettingsManager import SettingsManager
 from .StateManager import StateManager
 from .TSHCommentaryWidget import TSHCommentaryWidget
 from .TSHGameAssetManager import TSHGameAssetManager
-from .TSHOBSActions import OBSActions
+from .TSHOBSActions import OBSActions, AppOption
 from .TSHStatsUtil import TSHStatsUtil
 from .TSHTournamentDataProvider import TSHTournamentDataProvider
 from .Workers import Worker
@@ -75,42 +75,53 @@ class WebServerActions(QThread):
         return data
 
     def stage_clicked(self, data):
+        message = orjson.dumps(data)
+        self.obs.emit(AppOption.STAGE, message)
         self.stageWidget.stageStrikeLogic.StageClicked(
-            orjson.loads(data))
+            message)
         return "OK"
 
     def confirm_clicked(self):
+        self.obs.emit(AppOption.META.CONFIRM)
         self.stageWidget.stageStrikeLogic.ConfirmClicked()
         return "OK"
 
     def rps_win(self, winner):
+        winner = int(winner)
+        self.obs.emit(AppOption.RPS, winner)
         self.stageWidget.stageStrikeLogic.RpsResult(
-            int(winner))
+            winner)
         return "OK"
 
     def match_win(self, winner):
+        winner = int(winner)
+        self.obs.emit(AppOption.MATCH, winner)
         self.stageWidget.stageStrikeLogic.MatchWinner(
-            int(winner))
+            winner)
         # Web server updating score here
         self.UpdateScore()
         return "OK"
 
     def set_gentlemans(self, value):
+        self.obs.emit(AppOption.META.GENTLEMANS, value)
         self.stageWidget.stageStrikeLogic.SetGentlemans(
             value)
         return "OK"
 
     def stage_strike_undo(self):
+        self.obs.emit(AppOption.META.UNDO)
         self.stageWidget.stageStrikeLogic.Undo()
         self.UpdateScore()
         return "OK"
 
     def stage_strike_redo(self):
+        self.obs.emit(AppOption.META.REDO)
         self.stageWidget.stageStrikeLogic.Redo()
         self.UpdateScore()
         return "OK"
 
     def reset(self):
+        self.obs.emit(AppOption.META.RESTART)
         self.stageWidget.stageStrikeLogic.Initialize()
         self.UpdateScore()
         return "OK"
@@ -154,7 +165,7 @@ class WebServerActions(QThread):
             self.scoreboard.GetScoreboard(scoreboard).signals.CommandScoreChange.emit(1, -1)
         return "OK"
 
-    
+
     def team_color(self, scoreboard, team, color):
         if str(team) == "1":
             self.scoreboard.GetScoreboard(scoreboard).signals.CommandTeamColor.emit(0, color)
@@ -249,7 +260,7 @@ class WebServerActions(QThread):
     def swap_teams(self, scoreboard):
         self.scoreboard.GetScoreboard(scoreboard).signals.SwapTeams.emit()
         return "OK"
-    
+
     def get_swap(self, scoreboard):
         return str(self.scoreboard.GetScoreboard(scoreboard).teamsSwapped)
 
@@ -329,7 +340,7 @@ class WebServerActions(QThread):
         self.scoreboard.GetScoreboard(scoreboard).charNumber.setValue(1)
         self.scoreboard.GetScoreboard(scoreboard).CommandClearAll()
         return "OK"
-    
+
     def update_bracket(self):
         id = TSHTournamentDataProvider.instance.provider.GetTournamentPhases()[0].get("groups")[0].get("id")
         data = TSHTournamentDataProvider.instance.provider.GetTournamentPhaseGroup(id)
@@ -350,7 +361,7 @@ class WebServerActions(QThread):
                 )
             )
         return "OK"
-    
+
     def get_comms(self):
         return StateManager.Get("commentary")
 
@@ -369,7 +380,7 @@ class WebServerActions(QThread):
             provider = TSHTournamentDataProvider.instance.GetProvider()
             sets = provider.GetMatches(getFinished=False)
             return sets
-        
+
     def get_match(self, setId=None):
         setId = int(setId)
         provider = TSHTournamentDataProvider.instance.GetProvider()
@@ -396,7 +407,7 @@ class WebServerActions(QThread):
     def load_commentator_from_tag(self, index, tag, no_mains=False):
         index = int(index) - 1
         if index < 0:
-            return "ERROR : index can't be lower than 1" 
+            return "ERROR : index can't be lower than 1"
         result = self.commentaryWidget.LoadCommFromTagSignal.emit(index, tag, no_mains)
 
     def load_tournament(self, url=None):
@@ -414,7 +425,7 @@ class WebServerActions(QThread):
                     match = validator.match(url).capturedTexts()
                     if len(match) > 0:
                         continue
-            
+
             if "start.gg" in url:
                 matches = re.match(
                     "(.*start.gg/tournament/[^/]*/event[s]?/[^/]*)", url)
@@ -431,5 +442,5 @@ class WebServerActions(QThread):
 
             SettingsManager.Set("TOURNAMENT_URL", url)
             TSHTournamentDataProvider.instance.signals.tournament_url_update.emit(url)
-            
+
             return "OK"
