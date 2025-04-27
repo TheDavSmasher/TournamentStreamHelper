@@ -40,6 +40,7 @@ class SuperEnum(Enum):
                 setattr(enm, sub_enm.name, sub_enm)
                 enm._set_parent(sub_enm)
 
+    @property
     def top(self):
         """Return the topmost parent for this enum member."""
         current = self
