@@ -4,6 +4,8 @@ from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 import orjson
+
+from .OBS.TSHOBSWebsockets import OBSWebsocketManager
 from .StateManager import StateManager
 from .TSHStatsUtil import TSHStatsUtil
 from .SettingsManager import SettingsManager
@@ -27,6 +29,7 @@ class WebServerActions(QThread):
         self.stageWidget = stageWidget
         self.commentaryWidget = commentaryWidget
         self.threadPool = QThreadPool()
+        self.obsws = OBSWebsocketManager()
 
     def program_state(self):
         return StateManager.state
