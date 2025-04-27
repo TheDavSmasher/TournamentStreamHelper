@@ -99,7 +99,7 @@ class OBSWebsocketManager:
 
 if __name__ == '__main__':
     print("Connecting to OBS Websockets")
-    obswebsockets_manager = OBSWebsocketsManager()
+    obswebsockets_manager = OBSWebsocketManager()
 
     print("Changing visibility on a source \n\n")
     obswebsockets_manager.set_source_visibility('*** Mid Monitor', "Elgato Cam Link", False)
