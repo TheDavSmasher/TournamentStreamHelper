@@ -2,8 +2,13 @@ from enum import Enum, EnumMeta
 
 
 class SuperEnum(Enum):
+    def __new__(cls, *args):
+        obj = object.__new__(cls)
+        # determine value
+        obj._value_ = args[0]
+        return obj
+
     def __init__(self, value, nested: EnumMeta = None):
-        self.value = value
         self._parent_enum: SuperEnum | None = None
         if nested:
             if isinstance(nested, EnumMeta):
@@ -37,6 +42,7 @@ class SuperEnum(Enum):
 
         enm.__eq__ = _eq.__get__(enm, type(enm))
         enm.__hash__ = _hash.__get__(enm, type(enm))
+        enm.is_submember_of = _is_submember_of.__get__(enm, type(enm))
 
         if hasattr(enm, '_nested_enum'):
             for sub_enm in enm._nested_enum:
