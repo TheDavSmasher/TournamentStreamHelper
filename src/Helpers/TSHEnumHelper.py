@@ -19,6 +19,12 @@ class SuperEnum(Enum):
     def is_submember_of(self, parent_enum: EnumMeta):
         return self == parent_enum
 
+    def __eq__(self, other):
+        return self is other or self._parent_enum == other
+
+    def __hash__(self):
+        return hash(self._parent_enum or self)
+
     @property
     def enum_path(self):
         path = [self]
