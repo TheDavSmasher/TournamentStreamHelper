@@ -4,9 +4,10 @@ from enum import Enum, EnumMeta
 class SuperEnum(Enum):
     def __init__(self, value, nested=None):
         self.value = value
+        self._parent_enum: SuperEnum | None = None
         if nested:
             if isinstance(nested, EnumMeta):
-                self._nested_enum = nested
+                self._nested_enum: EnumMeta = nested
                 for enm in nested:
                     setattr(self, enm.name, enm)
                     self._set_parent(enm)
