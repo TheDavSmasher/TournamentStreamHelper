@@ -2,10 +2,9 @@ from enum import Enum, EnumMeta
 
 
 class SuperEnum(Enum):
-    def __new__(cls, *args):
+    def __new__(cls, value, nested=None):
         obj = object.__new__(cls)
-        # determine value
-        obj._value_ = args[0]
+        obj._value_ = value
         return obj
 
     def __init__(self, value, nested: EnumMeta = None):
