@@ -11,6 +11,15 @@ class SuperEnum(Enum):
                     setattr(self, enm.name, enm)
                     self._set_parent(enm)
 
+    def is_submember_of(self, parent_enum):
+        current = getattr(self, "_parent_enum", None)
+        while current is not None:
+            if current is parent_enum:
+                return True
+            current = getattr(current, "_parent_enum", None)
+        return False
+
+
     def _set_parent(self, enm):
         """Recursively set parent references and modify equality/hash."""
         enm._parent_enum = self
