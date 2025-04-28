@@ -103,7 +103,7 @@ class WebServerActions(QThread):
         return "OK"
 
     def set_gentlemans(self, value):
-        self.obs.emit(AppOption.META.GENTLEMANS, value)
+        self.obs.emit(AppOption.STAGE_GENTLEMANS, value)
         self.stageWidget.stageStrikeLogic.SetGentlemans(
             value)
         return "OK"

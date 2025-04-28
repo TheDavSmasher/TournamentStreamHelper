@@ -8,12 +8,12 @@ class MetaOptions(SuperEnum):
     UNDO = 1
     REDO = 2
     RESTART = 3
-    GENTLEMANS = 4
 
 
 class AppOption(SuperEnum):
     RPS = "rps"
     STAGE = "stage"
+    STAGE_GENTLEMANS = "stage_gen"
     MATCH = "match"
     META = "meta", MetaOptions
 
