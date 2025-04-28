@@ -75,10 +75,10 @@ class WebServerActions(QThread):
         return data
 
     def stage_clicked(self, data):
-        message = orjson.dumps(data)
-        self.obs.emit(AppOption.STAGE, message)
+        stage = orjson.loads(data).get("codename")
+        self.obs.emit(AppOption.STAGE, stage)
         self.stageWidget.stageStrikeLogic.StageClicked(
-            message)
+            stage)
         return "OK"
 
     def confirm_clicked(self):
