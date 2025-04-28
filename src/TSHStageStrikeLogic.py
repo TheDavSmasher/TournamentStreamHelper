@@ -24,6 +24,10 @@ class TSHStageStrikeState:
         self.serverTimestamp = 0
         self.gentlemans = False
 
+    def selectStage(self, stage):
+        self.selectedStage = stage
+        self.stagesPicked.append(stage)
+
     def Clone(self):
         clone = TSHStageStrikeState()
         clone.__dict__ = deepcopy(self.__dict__)
@@ -201,8 +205,7 @@ class TSHStageStrikeLogic():
             newState = self.CurrentState().Clone()
             selectedStage = next(
                 (stage for stage in self.ruleset.neutralStages if not self.IsStageStriked(stage.get("codename"))), None)
-            newState.selectedStage = selectedStage.get("codename")
-            newState.stagesPicked.append(selectedStage.get("codename"))
+            newState.selectStage(selectedStage.get("codename"))
             self.AddHistory(newState, justOverwrite=True)
 
     def initNewState(self, newState):
