@@ -2,6 +2,8 @@ from .StateManager import StateManager
 from copy import deepcopy
 from loguru import logger
 
+from .TSHScoreboardStageWidget import Ruleset
+
 
 class TSHStageStrikeState:
     def __init__(self) -> None:
@@ -30,8 +32,8 @@ class TSHStageStrikeState:
 
 class TSHStageStrikeLogic():
     def __init__(self) -> None:
-        self.ruleset: "Ruleset" = None
-        self.history: list(TSHStageStrikeState) = [TSHStageStrikeState()]
+        self.ruleset: Ruleset | None = None
+        self.history: list[TSHStageStrikeState] = [TSHStageStrikeState()]
         self.historyIndex = 0
 
     def AddHistory(self, state, justOverwrite=False):
@@ -154,12 +156,12 @@ class TSHStageStrikeLogic():
                 (i for i, e in enumerate(self.CurrentState().strikedStages[self.CurrentState().currStep]) if
                  e == stage), None)
 
-            if foundIndex == None:
+            if foundIndex is None:
                 if len(self.CurrentState().strikedStages[self.CurrentState().currStep]) < self.GetStrikeNumber():
                     logger.info("Stage banned")
                     newState = self.CurrentState().Clone()
-                    newState.strikedStages[newState.currStep].append(stage);
-                    newState.strikedBy[newState.currPlayer].append(stage);
+                    newState.strikedStages[newState.currStep].append(stage)
+                    newState.strikedBy[newState.currPlayer].append(stage)
                     self.AddHistory(newState)
             else:
                 logger.info("Stage unbanned")
@@ -170,7 +172,7 @@ class TSHStageStrikeLogic():
                 foundIndex = next((i for i, e in enumerate(newState.strikedBy[newState.currPlayer]) if e == stage),
                                   None)
 
-                if foundIndex != None:
+                if foundIndex is not None:
                     newState.strikedBy[newState.currPlayer].pop(foundIndex)
                     self.AddHistory(newState)
 
@@ -178,13 +180,14 @@ class TSHStageStrikeLogic():
         # For first game, user should have banned the correct number of stages before confirming
         if self.CurrentState().currGame == 0:
             if len(self.CurrentState().strikedStages[self.CurrentState().currStep]) == self.ruleset.strikeOrder[
-                self.CurrentState().currStep]:
+                self.CurrentState().currStep
+            ]:
                 newState = self.CurrentState().Clone()
                 newState.currStep += 1
                 newState.currPlayer = (newState.currPlayer + 1) % 2
                 newState.strikedStages.append([])
                 self.AddHistory(newState, justOverwrite=justOverwrite)
-        # For other games, user should have banned the correct bancount
+        # For other games, user should have banned the correct ban count
         else:
             if len(self.CurrentState().strikedStages[self.CurrentState().currStep]) == self.ruleset.banCount:
                 newState = self.CurrentState().Clone()
