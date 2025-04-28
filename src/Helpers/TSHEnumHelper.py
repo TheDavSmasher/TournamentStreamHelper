@@ -31,14 +31,11 @@ class SuperEnum(Enum):
 
     def _set_parent(self, enm):
         """Recursively set parent references and modify equality/hash."""
-        enm._parent_enum = self
+        setattr(enm, '_parent_enum', self)
 
         # Define dynamic __eq__ and __hash__
         def _eq(self_, other):
-            return (
-                self_ is other or
-                getattr(self_, "_parent_enum", None) == other
-            )
+            return self_ is other or getattr(self_, "_parent_enum") is other
 
         def _hash(self_):
             return hash(getattr(self_, "_parent_enum", self_))
