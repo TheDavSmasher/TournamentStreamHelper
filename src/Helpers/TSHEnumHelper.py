@@ -17,16 +17,16 @@ class SuperEnum(Enum):
         while current is not None:
             if current is parent_enum:
                 return True
-            current = getattr(current, "_parent_enum", None)
+            current = current._parent_enum
         return False
 
     @property
     def enum_path(self):
         path = [self]
-        current = getattr(self, "_parent_enum", None)
+        current = self._parent_enum
         while current is not None:
             path.append(current)
-            current = getattr(current, "_parent_enum", None)
+            current = current._parent_enum
         return path
 
     def _set_parent(self, enm):
