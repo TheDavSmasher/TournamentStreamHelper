@@ -3,7 +3,7 @@ from .Helpers.TSHEnumHelper import SuperEnum
 from .OBS.TSHOBSWebsockets import OBSWebsocketManager
 
 
-class MetaOptions(Enum):
+class MetaOptions(SuperEnum):
     CONFIRM = 0
     UNDO = 1
     REDO = 2
