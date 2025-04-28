@@ -1,4 +1,5 @@
 from enum import Enum
+from collections.abc import Callable
 from .Helpers.TSHEnumHelper import SuperEnum
 from .OBS.TSHOBSWebsockets import OBSWebsocketManager
 
@@ -27,10 +28,10 @@ class OBSOption(Enum):
 
 
 class OBSCommand:
-    def __init__(self, appOption: AppOption, obsOptions: OBSOption, data=None):
+    def __init__(self, appOption: AppOption, obsOptions: OBSOption, command: Callable = None):
         self.trigger = appOption
         self.target = obsOptions
-        self.data = data
+        self.command = command
 
 
 class OBSActions:
