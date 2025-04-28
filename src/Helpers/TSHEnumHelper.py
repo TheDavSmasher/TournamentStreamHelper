@@ -1,11 +1,9 @@
-from enum import Enum, EnumMeta
+from enum import Enum
 
 
 class SuperEnum(Enum):
     def __new__(cls, value, nested=None):
-        obj = object.__new__(cls)
-        obj._value_ = value
-        return obj
+        return super().__new__(cls, value)
 
     def __init__(self, value, nested=None):
         self._parent_enum: SuperEnum | None = None
