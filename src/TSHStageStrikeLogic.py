@@ -34,7 +34,7 @@ class TSHStageStrikeState:
         return clone
 
 
-class TSHStageStrikeLogic():
+class TSHStageStrikeLogic:
     def __init__(self) -> None:
         self.ruleset: Ruleset | None = None
         self.history: list[TSHStageStrikeState] = [TSHStageStrikeState()]
@@ -125,7 +125,7 @@ class TSHStageStrikeLogic():
         banList = self.GetBannedStages()
 
         found = next((i for i, e in enumerate(banList) if e == stage), None)
-        if found != None:
+        if found is not None:
             return True
         return False
 
