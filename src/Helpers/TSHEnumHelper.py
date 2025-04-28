@@ -2,7 +2,7 @@ from enum import Enum, EnumMeta
 
 
 class SuperEnum(Enum):
-    def __init__(self, value, nested=None):
+    def __init__(self, value, nested: EnumMeta = None):
         self.value = value
         self._parent_enum: SuperEnum | None = None
         if nested:
@@ -12,8 +12,8 @@ class SuperEnum(Enum):
                     setattr(self, enm.name, enm)
                     self._set_parent(enm)
 
-    def is_submember_of(self, parent_enum):
-        current = getattr(self, "_parent_enum", None)
+    def is_submember_of(self, parent_enum: EnumMeta):
+        current = self._parent_enum
         while current is not None:
             if current is parent_enum:
                 return True
