@@ -13,12 +13,7 @@ class SuperEnum(Enum):
                     self._set_parent(enm)
 
     def is_submember_of(self, parent_enum: EnumMeta):
-        current = self._parent_enum
-        while current is not None:
-            if current is parent_enum:
-                return True
-            current = current._parent_enum
-        return False
+        return self == parent_enum
 
     @property
     def enum_path(self):
