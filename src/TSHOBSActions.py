@@ -37,6 +37,29 @@ class OBSCommand:
 class OBSActions:
     def __init__(self):
         self.obs_ws = OBSWebsocketManager()
+        self.commands = []
 
-    def emit(self, option: AppOption, data=None):
-        add = None
+    def addObsCommand(self, command: OBSCommand):
+        self.commands.append(command)
+
+    # data is either stage name or player number (0 for first, 1 for second)
+    def emit(self, trigger: AppOption, data: str | int = None):
+        filtered = [command for command in self.commands if command.trigger in trigger.enum_path]
+        command: OBSCommand
+        for command in filtered:
+            result = command.command(data)
+            match command.target:
+                case OBSOption.SCENE:
+                    self.obs_ws.set_scene(result)
+                case OBSOption.FILTER:
+                    obs_source, obs_filter, filter_enabled = result
+                    self.obs_ws.set_filter_visibility(obs_source, obs_filter, filter_enabled)
+                case OBSOption.SOURCE:
+                    obs_scene, obs_source, source_visible = result
+                    self.obs_ws.set_source_visibility(obs_scene, obs_source, source_visible)
+                case OBSOption.TEXT:
+                    obs_source, text = result
+                    self.obs_ws.set_text(obs_source, text)
+                case OBSOption.TRANSFORM:
+                    obs_scene, obs_source, source_transform = result
+                    self.obs_ws.set_source_transform(obs_scene, obs_source, source_transform)
