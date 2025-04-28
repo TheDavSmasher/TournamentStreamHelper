@@ -18,6 +18,21 @@ class AppOption(SuperEnum):
     META = "meta", MetaOptions
 
 
+class OBSOption(Enum):
+    SCENE = 0
+    FILTER = 1
+    SOURCE = 2
+    TEXT = 3
+    TRANSFORM = 4
+
+
+class OBSCommand:
+    def __init__(self, appOption: AppOption, obsOptions: OBSOption, data=None):
+        self.trigger = appOption
+        self.target = obsOptions
+        self.data = data
+
+
 class OBSActions:
     def __init__(self):
         self.obs_ws = OBSWebsocketManager()
