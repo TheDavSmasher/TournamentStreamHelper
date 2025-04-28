@@ -19,6 +19,7 @@ class SuperEnum(Enum):
             current = getattr(current, "_parent_enum", None)
         return False
 
+    @property
     def enum_path(self):
         path = [self]
         current = getattr(self, "_parent_enum", None)
