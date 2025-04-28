@@ -2,15 +2,8 @@ from enum import Enum, EnumMeta
 
 
 class SuperEnum(Enum):
-    def __new__(cls, *args):
-        obj = object.__new__(cls)
-
-        if args:
-            obj._value_ = args[0]
-
-        return obj
-
     def __init__(self, value, nested=None):
+        self.value = value
         if nested:
             if isinstance(nested, EnumMeta):
                 self._nested_enum = nested
