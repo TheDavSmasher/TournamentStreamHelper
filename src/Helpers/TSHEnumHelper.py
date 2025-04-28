@@ -14,7 +14,7 @@ class SuperEnum(Enum):
                 raise TypeError(f"Nested enum must be a SuperEnum, got {type(nested)}.")
             for enm in nested:
                 setattr(self, enm.name, enm)
-                setattr(enm, '_parent_enum', self)
+                enm._parent_enum = self
 
     def is_submember_of(self, parent_enum):
         return self == parent_enum
