@@ -19,6 +19,13 @@ class SuperEnum(Enum):
             current = getattr(current, "_parent_enum", None)
         return False
 
+    def enum_path(self):
+        path = [self]
+        current = getattr(self, "_parent_enum", None)
+        while current is not None:
+            path.append(current)
+            current = getattr(current, "_parent_enum", None)
+        return path
 
     def _set_parent(self, enm):
         """Recursively set parent references and modify equality/hash."""
