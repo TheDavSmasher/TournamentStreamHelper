@@ -15,5 +15,3 @@ class TSHOBSSettingsWindow(GenericSettingsWindow[OBSSettingsWidget]):
             )
         ]
         super().__init__("OBS Websocket Settings", settings, parent=parent)
-        self.selection_list = QListWidget()
-        self.settings_stack = QStackedWidget()
