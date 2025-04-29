@@ -1,7 +1,6 @@
 import textwrap
-from abc import abstractmethod, ABCMeta
 from dataclasses import dataclass
-from typing import Any, TypeVar, Generic, Callable
+from typing import Any, Callable
 
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
@@ -20,11 +19,7 @@ class SettingsItem:
     tooltip: str = None
 
 
-class MetaQWidgetABC(type(QWidget), ABCMeta):
-    pass
-
-
-class AbstractSettingsWidget(QWidget, metaclass=MetaQWidgetABC):
+class SettingsWidget(QWidget):
     def __init__(self, settingsBase="", settings: list[SettingsItem] = None):
         super().__init__()
 
@@ -95,8 +90,7 @@ class AbstractSettingsWidget(QWidget, metaclass=MetaQWidgetABC):
                     ]
                 )
             case _:
-                settingWidget, buttonAction = self.CreateOtherSettings(setting)
-                resetButton.clicked.connect(buttonAction)
+                raise Exception("Invalid setting type")
 
         if setting.tooltip:
             settingWidget.setToolTip('\n'.join(textwrap.wrap(setting.tooltip, 40)))
@@ -104,22 +98,15 @@ class AbstractSettingsWidget(QWidget, metaclass=MetaQWidgetABC):
         self.layout().addWidget(settingWidget, lastRow, 1)
         self.layout().addWidget(resetButton, lastRow, 2)
 
-    @abstractmethod
-    def CreateOtherSettings(self, setting: SettingsItem) -> tuple[QWidget, Callable[..., None]]:
-        pass
-
-
-T = TypeVar('T', bound=AbstractSettingsWidget)
-
 
 @dataclass
-class SettingsGroup(Generic[T]):
+class SettingsGroup:
     name: str
-    widget: T
+    widget: SettingsWidget
     context: str = "settings"
 
 
-class GenericSettingsWindow(QDialog, Generic[T]):
+class GenericSettingsWindow(QDialog):
     def __init__(self, window_name: str, settings: list[SettingsGroup], parent=None):
         super().__init__(parent=parent)
         self.window_name = window_name

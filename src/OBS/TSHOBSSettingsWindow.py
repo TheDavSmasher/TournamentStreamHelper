@@ -1,24 +1,24 @@
-from .OBSSettingsWidget import OBSSettingsWidget
-from ..Helpers.TSHSettingsHelper import GenericSettingsWindow, SettingsGroup, SettingsItem
+from ..Helpers.TSHSettingsHelper import GenericSettingsWindow, SettingsGroup, SettingsItem, SettingsWidget
 
 
-class TSHOBSSettingsWindow(GenericSettingsWindow[OBSSettingsWidget]):
+class TSHOBSSettingsWindow(GenericSettingsWindow):
     def __init__(self, parent=None):
         settings: list[SettingsGroup] = [
             SettingsGroup(
                 "Websocket Connection",
-                OBSSettingsWidget(
+                SettingsWidget(
                     "obs_auth",
                     [
                         SettingsItem("OBS Host", "settings.obs", "obs_host", "textbox", "localhost"),
                         SettingsItem("OBS Port", "settings.obs", "obs_port", "textbox", "4455"),
                         SettingsItem("OBS Password", "settings.obs", "obs_password", "password", ""),
+                        SettingsItem("OBS Auto-reconnect Timer", "settings.obs", "obs_auto_reconnect_timer", "integer", 0),
                     ]
                 )
             ),
             SettingsGroup(
                 "Websocket Rules",
-                OBSSettingsWidget(
+                SettingsWidget(
                     "obs_rules",
                     [
                         SettingsItem("Add OBS Rule", "settings.obs", "obs_rule", "creator", None)

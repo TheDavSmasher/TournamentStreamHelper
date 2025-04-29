@@ -1,10 +1,9 @@
 from qtpy.QtWidgets import *
-from .SettingsWidget import SettingsWidget
-from ..Helpers.TSHSettingsHelper import GenericSettingsWindow, SettingsGroup, SettingsItem
+from ..Helpers.TSHSettingsHelper import GenericSettingsWindow, SettingsGroup, SettingsItem, SettingsWidget
 from ..TSHHotkeys import TSHHotkeys
 
 
-class TSHSettingsWindow(GenericSettingsWindow[SettingsWidget]):
+class TSHSettingsWindow(GenericSettingsWindow):
     def __init__(self, parent=None):
         settings: list[SettingsGroup] = [
             SettingsGroup(
