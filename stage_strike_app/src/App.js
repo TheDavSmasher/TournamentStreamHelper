@@ -71,10 +71,7 @@ class App extends Component {
     bestOf: null,
     gentlemans: false,
     canUndo: false,
-    canRedo: false,
-    firstConnect: true,
-    connectedToOBS: false,
-    autoconnect: false
+    canRedo: false
   };
 
   RestartStageStrike() {
@@ -251,23 +248,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    window.setInterval(() => this.ConnectToOBS(), 5000)
     window.setInterval(() => this.FetchRuleset(), 100);
-  }
-
-  ConnectToOBS() {
-    if (this.state.firstConnect || (this.state.autoconnect && !this.state.connectedToOBS)) {
-      fetch("http://" + window.location.hostname + ":5000/obs_connect")
-        .then(res => res.json())
-        .then(data => {
-          this.setState({
-            firstConnect: false,
-            autoconnect: data.autoconnect,
-            connectedToOBS: data.success
-          })
-        })
-        .catch(console.log)
-    }
   }
 
   FetchRuleset() {

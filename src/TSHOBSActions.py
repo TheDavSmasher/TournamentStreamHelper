@@ -39,9 +39,6 @@ class OBSActions:
         self.obs_ws = OBSWebsocketManager()
         self.commands = []
 
-    def connect(self):
-        return self.obs_ws.connect()
-
     def addObsCommand(self, command: OBSCommand):
         self.commands.append(command)
 
