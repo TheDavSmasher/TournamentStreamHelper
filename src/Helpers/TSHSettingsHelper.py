@@ -36,6 +36,12 @@ class SettingsWidget(QWidget):
         for setting in settings:
             self.AddSetting(setting)
 
+    def SetSetting(self, key: str, default):
+        SettingsManager.Set(self.settingsBase + "." + key, default)
+
+    def GetSetting(self, setting: SettingsItem):
+        return SettingsManager.Get(self.settingsBase + "." + setting.key, setting.defaultValue)
+
     def AddSetting(self, setting: SettingsItem):
         lastRow = self.layout().rowCount()
 
@@ -47,10 +53,9 @@ class SettingsWidget(QWidget):
         match setting.settingType:
             case "checkbox":
                 settingWidget = QCheckBox()
-                settingWidget.setChecked(SettingsManager.Get(
-                    self.settingsBase + "." + setting.key, setting.defaultValue))
+                settingWidget.setChecked(self.GetSetting(setting))
                 settingWidget.stateChanged.connect(
-                    lambda val=None: SettingsManager.Set(self.settingsBase + "." + setting.key, settingWidget.isChecked()))
+                    lambda val=None: self.SetSetting(setting.key, settingWidget.isChecked()))
                 resetButton.clicked.connect(
                     lambda bt=None: settingWidget.setChecked(setting.defaultValue))
             case "hotkey":
@@ -60,12 +65,10 @@ class SettingsWidget(QWidget):
                     settingWidget.setKeySequence(keySequence.toString().split(",")[
                         0]) if keySequence.count() > 0 else None
                 )
-                settingWidget.setKeySequence(SettingsManager.Get(
-                    self.settingsBase + "." + setting.key, setting.defaultValue))
+                settingWidget.setKeySequence(self.GetSetting(setting))
                 settingWidget.keySequenceChanged.connect(
                     lambda sequence=None: [
-                        SettingsManager.Set(
-                            self.settingsBase + "." + setting.key, sequence.toString()),
+                        self.SetSetting(setting.key, sequence.toString()),
                         setting.callback()
                     ]
                 )
@@ -80,9 +83,8 @@ class SettingsWidget(QWidget):
                 if setting.settingType == "password":
                     settingWidget.setEchoMode(QLineEdit.EchoMode.Password)
                 settingWidget.textChanged.connect(
-                    lambda val=None: SettingsManager.Set(self.settingsBase + "." + setting.key, settingWidget.text()))
-                settingWidget.setText(SettingsManager.Get(
-                    self.settingsBase + "." + setting.key, setting.defaultValue))
+                    lambda val=None: self.SetSetting(setting.key, settingWidget.text()))
+                settingWidget.setText(self.GetSetting(setting))
                 resetButton.clicked.connect(
                     lambda bt=None: [
                         settingWidget.setText(setting.defaultValue),
