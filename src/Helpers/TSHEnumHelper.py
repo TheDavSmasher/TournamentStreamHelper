@@ -3,7 +3,9 @@ from enum import Enum
 
 class SuperEnum(Enum):
     def __new__(cls, value, nested=None):
-        return super().__new__(cls, value)
+        obj = object.__new__(cls)
+        obj._value_ = value
+        return obj
 
     def __init__(self, value, nested=None):
         self._parent_enum: SuperEnum | None = None
