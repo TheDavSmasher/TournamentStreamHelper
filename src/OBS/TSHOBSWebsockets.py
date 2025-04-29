@@ -1,7 +1,7 @@
 import time
 import sys
 from obswebsocket import obsws, requests
-from TSHOBSWebsocketAuth import WEBSOCKET_HOST, WEBSOCKET_PORT, WEBSOCKET_PASSWORD
+from .TSHOBSWebsocketAuth import WEBSOCKET_HOST, WEBSOCKET_PORT, WEBSOCKET_PASSWORD
 
 
 class OBSWebsocketManager:

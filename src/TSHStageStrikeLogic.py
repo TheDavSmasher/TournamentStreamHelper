@@ -2,9 +2,6 @@ from .StateManager import StateManager
 from copy import deepcopy
 from loguru import logger
 
-from .TSHScoreboardStageWidget import Ruleset
-
-
 class TSHStageStrikeState:
     def __init__(self) -> None:
         self.currGame = 0
@@ -36,7 +33,7 @@ class TSHStageStrikeState:
 
 class TSHStageStrikeLogic:
     def __init__(self) -> None:
-        self.ruleset: Ruleset | None = None
+        self.ruleset = None
         self.history: list[TSHStageStrikeState] = [TSHStageStrikeState()]
         self.historyIndex = 0
 
