@@ -1,10 +1,11 @@
+from typing import Callable
+
 from qtpy.QtWidgets import *
 
 from ..Helpers.TSHSettingsHelper import AbstractSettingsWidget, SettingsItem
 from ..SettingsManager import SettingsManager
-import textwrap
 
 
 class OBSSettingsWidget(AbstractSettingsWidget):
-    def AddSetting(self, setting: SettingsItem):
+    def CreateOtherSettings(self, setting: SettingsItem) -> tuple[QWidget, Callable[..., None]]:
         pass
