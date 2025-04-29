@@ -1,9 +1,11 @@
-from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 from .OBSSettingsWidget import OBSSettingsWidget
-from ..TSHHotkeys import TSHHotkeys
+from ..Helpers.TSHSettingsHelper import GenericSettingsWindow, SettingsGroup
 
 
-class TSHOBSSettingsWindow(QDialog):
+class TSHOBSSettingsWindow(GenericSettingsWindow[OBSSettingsWidget]):
     def __init__(self, parent=None):
-        super().__init__(parent=parent)
+        settings: list[SettingsGroup] = []
+        super().__init__("OBS Websocket Settings", settings, parent=parent)
+        self.selection_list = QListWidget()
+        self.settings_stack = QStackedWidget()
