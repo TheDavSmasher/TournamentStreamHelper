@@ -10,7 +10,8 @@ class OBSWebsocketManager:
         port = SettingsManager.Get("obs_auth.obs_port", 4455)
         password = SettingsManager.Get("obs_auth.obs_password")
         reconnect = SettingsManager.Get("obs_auth.obs_reconnect", 0)
-        self.ws = obsws(host, port, password)
+        self.ws = obsws(host, port, password, authreconnect=reconnect)
+        self.connect()
 
     def connect(self) -> bool:
         try:
