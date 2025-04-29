@@ -8,4 +8,4 @@ from ..SettingsManager import SettingsManager
 
 class OBSSettingsWidget(AbstractSettingsWidget):
     def CreateOtherSettings(self, setting: SettingsItem) -> tuple[QWidget, Callable[..., None]]:
-        pass
+        return QWidget(), lambda: None
