@@ -2,12 +2,12 @@ from enum import Enum
 
 
 class SuperEnum(Enum):
-    def __new__(cls, value, nested=None):
+    def __new__(cls, value, _=None):
         obj = object.__new__(cls)
         obj._value_ = value
         return obj
 
-    def __init__(self, value, nested=None):
+    def __init__(self, _, nested=None):
         self._parent_enum: SuperEnum | None = None
         if nested:
             if not isinstance(nested, type(self)):
