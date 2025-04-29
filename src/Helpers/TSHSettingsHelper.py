@@ -40,9 +40,10 @@ class AbstractSettingsWidget(QWidget, ABC):
     def AddSetting(self, setting: SettingsItem):
         lastRow = self.layout().rowCount()
 
-        self.layout().addWidget(QLabel(setting.label), lastRow, 0)
+        self.layout().addWidget(
+            QLabel(QApplication.translate(setting.context, setting.label)), lastRow, 0)
 
-        resetButton = QPushButton(QApplication.translate(setting.context, "Default"))
+        resetButton = QPushButton(QApplication.translate("settings", "Default"))
 
         match setting.settingType:
             case "checkbox":
