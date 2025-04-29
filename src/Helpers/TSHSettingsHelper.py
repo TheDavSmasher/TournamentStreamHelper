@@ -1,12 +1,12 @@
 import textwrap
-from abc import abstractmethod, ABC
+from abc import abstractmethod, ABCMeta
 from dataclasses import dataclass
 from typing import Any, TypeVar, Generic, Callable
 
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 
-from src import SettingsManager
+from ..SettingsManager import SettingsManager
 
 
 @dataclass
@@ -20,7 +20,11 @@ class SettingsItem:
     tooltip: str = None
 
 
-class AbstractSettingsWidget(QWidget, ABC):
+class MetaQWidgetABC(type(QWidget), ABCMeta):
+    pass
+
+
+class AbstractSettingsWidget(QWidget, metaclass=MetaQWidgetABC):
     def __init__(self, settingsBase="", settings: list[SettingsItem] = None):
         super().__init__()
 
