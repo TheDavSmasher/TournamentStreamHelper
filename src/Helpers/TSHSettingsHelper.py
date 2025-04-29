@@ -15,7 +15,7 @@ class SettingsItem:
     context: str
     key: str
     setting_type: str
-    default_value: Any
+    defaultValue: Any
     callback: Callable[[], None] = lambda: None
     tooltip: str = None
 
@@ -48,11 +48,11 @@ class AbstractSettingsWidget(QWidget, ABC):
             case "checkbox":
                 settingWidget = QCheckBox()
                 settingWidget.setChecked(SettingsManager.Get(
-                    self.settingsBase + "." + setting.key, setting.default_value))
+                    self.settingsBase + "." + setting.key, setting.defaultValue))
                 settingWidget.stateChanged.connect(
                     lambda val=None: SettingsManager.Set(self.settingsBase + "." + setting.key, settingWidget.isChecked()))
                 resetButton.clicked.connect(
-                    lambda bt=None: settingWidget.setChecked(setting.default_value))
+                    lambda bt=None: settingWidget.setChecked(setting.defaultValue))
             case "hotkey":
                 settingWidget = QKeySequenceEdit()
                 settingWidget.keySequenceChanged.connect(
@@ -61,7 +61,7 @@ class AbstractSettingsWidget(QWidget, ABC):
                         0]) if keySequence.count() > 0 else None
                 )
                 settingWidget.setKeySequence(SettingsManager.Get(
-                    self.settingsBase + "." + setting.key, setting.default_value))
+                    self.settingsBase + "." + setting.key, setting.defaultValue))
                 settingWidget.keySequenceChanged.connect(
                     lambda sequence=None: [
                         SettingsManager.Set(
@@ -71,7 +71,7 @@ class AbstractSettingsWidget(QWidget, ABC):
                 )
                 resetButton.clicked.connect(
                     lambda bt=None: [
-                        settingWidget.setKeySequence(setting.default_value),
+                        settingWidget.setKeySequence(setting.defaultValue),
                         setting.callback()
                     ]
                 )
@@ -82,10 +82,10 @@ class AbstractSettingsWidget(QWidget, ABC):
                 settingWidget.textChanged.connect(
                     lambda val=None: SettingsManager.Set(self.settingsBase + "." + setting.key, settingWidget.text()))
                 settingWidget.setText(SettingsManager.Get(
-                    self.settingsBase + "." + setting.key, setting.default_value))
+                    self.settingsBase + "." + setting.key, setting.defaultValue))
                 resetButton.clicked.connect(
                     lambda bt=None: [
-                        settingWidget.setText(setting.default_value),
+                        settingWidget.setText(setting.defaultValue),
                         setting.callback()
                     ]
                 )
