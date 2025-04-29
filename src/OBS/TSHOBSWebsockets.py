@@ -1,14 +1,16 @@
-import time
-import sys
 from obswebsocket import obsws, requests
-from .TSHOBSWebsocketAuth import WEBSOCKET_HOST, WEBSOCKET_PORT, WEBSOCKET_PASSWORD
+from ..SettingsManager import SettingsManager
 
 
 class OBSWebsocketManager:
     ws = None
 
     def __init__(self):
-        self.ws = obsws(WEBSOCKET_HOST, WEBSOCKET_PORT, WEBSOCKET_PASSWORD)
+        host = SettingsManager.Get("obs_auth.obs_host")
+        port = SettingsManager.Get("obs_auth.obs_port", 4455)
+        password = SettingsManager.Get("obs_auth.obs_password")
+        reconnect = SettingsManager.Get("obs_auth.obs_reconnect", 0)
+        self.ws = obsws(host, port, password)
 
     def connect(self) -> bool:
         try:
