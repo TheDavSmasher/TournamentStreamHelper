@@ -1,24 +1,13 @@
 from qtpy.QtWidgets import *
+
+from ..Helpers.TSHSettingsHelper import AbstractSettingsWidget
 from ..TSHHotkeys import TSHHotkeys
 from ..SettingsManager import SettingsManager
 import textwrap
 
 
-class SettingsWidget(QWidget):
-    def __init__(self, settingsBase="", settings=[]):
-        super().__init__()
+class SettingsWidget(AbstractSettingsWidget):
 
-        self.settingsBase = settingsBase
-
-        # Create a layout for the widget and add the label
-        layout = QGridLayout()
-        layout.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
-
-        # Set the layout for the widget
-        self.setLayout(layout)
-
-        for setting in settings:
-            self.AddSetting(*setting)
 
     def AddSetting(self, name: str, setting: str, type: str, defaultValue, callback=lambda: None, tooltip=None):
         lastRow = self.layout().rowCount()
