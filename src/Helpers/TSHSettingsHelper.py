@@ -28,10 +28,10 @@ class SettingsWidget(QWidget):
 
         self.settingsBase = settingsBase
 
-        layout = QGridLayout()
-        layout.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
+        self.layoutGrid = QGridLayout()
+        self.layoutGrid.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
 
-        self.setLayout(layout)
+        self.setLayout(self.layoutGrid)
 
         for setting in settings:
             self.AddSetting(setting)
@@ -43,9 +43,9 @@ class SettingsWidget(QWidget):
         return SettingsManager.Get(self.settingsBase + "." + setting.key, setting.defaultValue)
 
     def AddSetting(self, setting: SettingsItem):
-        lastRow = self.layout().rowCount()
+        lastRow = self.layoutGrid.rowCount()
 
-        self.layout().addWidget(
+        self.layoutGrid.addWidget(
             QLabel(QApplication.translate(setting.context, setting.label)), lastRow, 0)
 
         resetButton = QPushButton(QApplication.translate("settings", "Default"))
@@ -107,8 +107,8 @@ class SettingsWidget(QWidget):
         if setting.tooltip:
             settingWidget.setToolTip('\n'.join(textwrap.wrap(setting.tooltip, 40)))
 
-        self.layout().addWidget(settingWidget, lastRow, 1)
-        self.layout().addWidget(resetButton, lastRow, 2)
+        self.layoutGrid.addWidget(settingWidget, lastRow, 1)
+        self.layoutGrid.addWidget(resetButton, lastRow, 2)
 
 
 @dataclass
