@@ -4,7 +4,7 @@ from .Helpers.TSHEnumHelper import SuperEnum
 from .OBS.TSHOBSWebsockets import OBSWebsocketManager
 
 
-class MetaOptions(SuperEnum):
+class MetaOption(SuperEnum):
     CONFIRM = 0
     UNDO = 1
     REDO = 2
@@ -16,7 +16,7 @@ class AppOption(SuperEnum):
     STAGE = "stage"
     STAGE_GENTLEMANS = "stage_gen"
     MATCH = "match"
-    META = "meta", MetaOptions
+    META = "meta", MetaOption
 
 
 class OBSOption(Enum):
