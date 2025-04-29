@@ -10,116 +10,56 @@ class TSHSettingsWindow(GenericSettingsWindow[SettingsWidget]):
             SettingsGroup(
                 "General",
                 SettingsWidget("general", [
-                    SettingsItem(),
-                    SettingsItem(),
-                    SettingsItem(),
-                    SettingsItem(),
-                    SettingsItem()
+                    SettingsItem("Enable profanity filter", "settings.general", "profanity_filter", "checkbox", True),
+                    SettingsItem("Enable score control from the stage striking app",
+                                 "settings.control_score_from_stage_strike", "control_score_from_stage_strike",
+                                 "checkbox", True),
+                    SettingsItem("Disable automatic set updating for the scoreboard", "settings.disable_autoupdate",
+                                 "disable_autoupdate", "checkbox", False),
+                    SettingsItem("Disable TSH file exporting", "settings.disable_export", "disable_export", "checkbox",
+                                 False),
+                    SettingsItem("Do not override existing values in local_players.csv (takes effect on next restart)",
+                                 "settings.disable_overwrite", "disable_overwrite", "checkbox", False)
                 ])
             ),
             SettingsGroup(
                 "Hotkeys",
-                SettingsWidget("hotkeys", [])
+                SettingsWidget("hotkeys", TSHSettingsWindow.GetHotkeySettings()),
             ),
             SettingsGroup(
                 "Bluesky",
                 SettingsWidget("bsky_account", [
-                    SettingsItem(),
+                    SettingsItem("Host server", "settings.bsky", "host", "textbox", "https://bsky.social"),
+                    SettingsItem("Bluesky Handle", "settings.bsky", "username", "textbox", ""),
+                    SettingsItem("Application Password", "settings.bsky", "app_password", "password", "",
+                                 lambda: None,
+                                 QApplication.translate(
+                                     "settings.bsky",
+                                     "You can get an app password by going into your Bluesky settings -> Privacy & Security") + "\n" +
+                                 QApplication.translate(
+                                     "settings.bsky",
+                                     "Please note that said app password will be stored in plain text on your computer") + "\n\n" +
+                                 QApplication.translate(
+                                     "settings.bsky", "Do not use your regular account password!").upper())
                 ])
             )
         ]
         super().__init__("Settings", settings, parent=parent)
 
-    def UiMounted(self):
-        # Add general settings
-        generalSettings = [(
-            QApplication.translate(
-                "settings.general", "Enable profanity filter"),
-            "profanity_filter",
-            "checkbox",
-            True
-        ), (
-            QApplication.translate(
-                "settings.control_score_from_stage_strike", "Enable score control from the stage striking app"),
-            "control_score_from_stage_strike",
-            "checkbox",
-            True
-        ), (
-            QApplication.translate(
-                "settings.disable_autoupdate", "Disable automatic set updating for the scoreboard"),
-            "disable_autoupdate",
-            "checkbox",
-            False
-        ), (
-            QApplication.translate(
-                "settings.disable_export", "Disable TSH file exporting"),
-            "disable_export",
-            "checkbox",
-            False
-        ), (
-            QApplication.translate(
-                "settings.disable_overwrite",
-                "Do not override existing values in local_players.csv (takes effect on next restart)"),
-            "disable_overwrite",
-            "checkbox",
-            False
-        )]
-
-        # Add hotkey settings
-        hotkeySettings = [(
-            QApplication.translate("settings.hotkeys", "Enable hotkeys"),
-            "hotkeys_enabled",
-            "checkbox",
-            True
-        )]
+    @staticmethod
+    def GetHotkeySettings():
+        hotkeySettings = [SettingsItem("Enable hotkeys", "settings.hotkeys", "hotkeys_enabled", "checkbox", True)]
 
         key_names = {
-            "load_set": QApplication.translate("settings.hotkeys", "Load set"),
-            "team1_score_up": QApplication.translate("settings.hotkeys", "Team 1 score up"),
-            "team1_score_down": QApplication.translate("settings.hotkeys", "Team 1 score down"),
-            "team2_score_up": QApplication.translate("settings.hotkeys", "Team 2 score up"),
-            "team2_score_down": QApplication.translate("settings.hotkeys", "Team 2 score down"),
-            "reset_scores": QApplication.translate("settings.hotkeys", "Reset scores"),
-            "swap_teams": QApplication.translate("settings.hotkeys", "Swap teams"),
+            "load_set": "Load set",
+            "team1_score_up": "Team 1 score up",
+            "team1_score_down": "Team 1 score down",
+            "team2_score_up": "Team 2 score up",
+            "team2_score_down": "Team 2 score down",
+            "reset_scores": "Reset scores",
+            "swap_teams": "Swap teams",
         }
 
-        for i, (setting, value) in enumerate(TSHHotkeys.instance.keys.items()):
-            hotkeySettings.append((
-                key_names[setting],
-                setting,
-                "hotkey",
-                value,
-                TSHHotkeys.instance.ReloadHotkeys
-            ))
-            
-        # Add Bluesky settings
-        bskySettings = [(
-            QApplication.translate(
-                "settings.bsky", "Host server"),
-            "host",
-            "textbox",
-            "https://bsky.social"
-        ), (
-            QApplication.translate(
-                "settings.bsky", "Bluesky Handle"),
-            "username",
-            "textbox",
-            ""
-        ), (
-            QApplication.translate(
-                "settings.bsky", "Application Password"),
-            "app_password",
-            "password",
-            "",
-            None,
-            QApplication.translate(
-                "settings.bsky",
-                "You can get an app password by going into your Bluesky settings -> Privacy & Security") + "\n" +
-            QApplication.translate(
-                "settings.bsky",
-                "Please note that said app password will be stored in plain text on your computer") + "\n\n" +
-            QApplication.translate(
-                "settings.bsky", "Do not use your regular account password!").upper()
-        )]
-
-
+        for _, (setting, value) in enumerate(TSHHotkeys.instance.keys.items()):
+            hotkeySettings.append(SettingsItem(key_names[setting], "settings.hotkeys", setting, "hotkey", value, TSHHotkeys.instance.ReloadHotkeys()))
+        return hotkeySettings
