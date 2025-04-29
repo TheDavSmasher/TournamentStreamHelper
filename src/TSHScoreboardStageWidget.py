@@ -11,6 +11,7 @@ from src.Helpers.TSHLocaleHelper import TSHLocaleHelper
 from src.TSHStageStrikeLogic import TSHStageStrikeLogic
 from .Helpers.TSHDirHelper import TSHResolve
 from .Helpers.TSHDictHelper import deep_get
+from .OBS.TSHOBSSettingsWindow import TSHOBSSettingsWindow
 from .StateManager import StateManager
 from .TSHGameAssetManager import TSHGameAssetManager
 import socket
@@ -52,6 +53,8 @@ class TSHScoreboardStageWidget(QDockWidget):
         self.stageStrikeLogic = TSHStageStrikeLogic()
 
         self.signals = TSHScoreboardStageWidgetSignals()
+
+        self.obsSettings = TSHOBSSettingsWindow()
 
         uic.loadUi(TSHResolve("src/layout/TSHScoreboardStage.ui"), self.innerWidget)
 
@@ -136,7 +139,7 @@ class TSHScoreboardStageWidget(QDockWidget):
         self.obs.setFixedSize(QSize(48, 32))
         self.obs.setSizePolicy(
             QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
-        self.obs.clicked.connect(self.SetupOBSCommands)
+        self.obs.clicked.connect(lambda: self.obsSettings.show())
 
         self.obsLabel = self.findChild(QLabel, "labelObs")
         self.obsLabel.setText(
