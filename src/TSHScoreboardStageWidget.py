@@ -130,6 +130,19 @@ class TSHScoreboardStageWidget(QDockWidget):
         self.labelValidation = self.findChild(QLabel, "labelValidation")
         self.labelValidation.setText("")
 
+        self.obs = self.findChild(QPushButton, "btOBS")
+        self.obs.setIcon(QIcon('assets/icons/settings.svg'))
+        self.obs.setIconSize(QSize(24, 24))
+        self.obs.setFixedSize(QSize(48, 32))
+        self.obs.setSizePolicy(
+            QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
+        self.obs.clicked.connect(self.SetupOBSCommands)
+
+        self.obsLabel = self.findChild(QLabel, "labelObs")
+        self.obsLabel.setText(
+            QApplication.translate("app", "Configure OBS Websocket actions for Stage Striking App"))
+        self.obsLabel.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+
         self.signals.rulesets_changed.connect(self.LoadRulesets)
         self.LoadStartggRulesets()
         self.LoadRuleset()
@@ -189,6 +202,9 @@ class TSHScoreboardStageWidget(QDockWidget):
 
         for s in counterpickStages:
             self.counterpickModel.appendRow(s.clone())
+
+    def SetupOBSCommands(self):
+        pass
 
     def GetIP(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
