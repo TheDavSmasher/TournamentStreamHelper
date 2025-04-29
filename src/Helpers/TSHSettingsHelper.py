@@ -1,25 +1,31 @@
+import textwrap
 from abc import abstractmethod, ABC
 from dataclasses import dataclass
-from typing import Any, TypeVar, Generic
+from typing import Any, TypeVar, Generic, Callable
 
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 
+from src import SettingsManager
+
 
 @dataclass
 class SettingsItem:
-    name: str
+    label: str
     context: str
-    setting: str
+    key: str
     setting_type: str
     default_value: Any
-    callback = lambda: None
+    callback: Callable[[], None] = lambda: None
     tooltip: str = None
 
 
 class AbstractSettingsWidget(QWidget, ABC):
-    def __init__(self, settingsBase="", settings: list[SettingsItem] = []):
+    def __init__(self, settingsBase="", settings=None):
         super().__init__()
+
+        if settings is None:
+            settings = []
 
         self.settingsBase = settingsBase
 
@@ -31,8 +37,70 @@ class AbstractSettingsWidget(QWidget, ABC):
         for setting in settings:
             self.AddSetting(setting)
 
-    @abstractmethod
     def AddSetting(self, setting: SettingsItem):
+        lastRow = self.layout().rowCount()
+
+        self.layout().addWidget(QLabel(setting.label), lastRow, 0)
+
+        resetButton = QPushButton(QApplication.translate(setting.context, "Default"))
+
+        match setting.setting_type:
+            case "checkbox":
+                settingWidget = QCheckBox()
+                settingWidget.setChecked(SettingsManager.Get(
+                    self.settingsBase + "." + setting.key, setting.default_value))
+                settingWidget.stateChanged.connect(
+                    lambda val=None: SettingsManager.Set(self.settingsBase + "." + setting.key, settingWidget.isChecked()))
+                resetButton.clicked.connect(
+                    lambda bt=None: settingWidget.setChecked(setting.default_value))
+            case "hotkey":
+                settingWidget = QKeySequenceEdit()
+                settingWidget.keySequenceChanged.connect(
+                    lambda keySequence:
+                    settingWidget.setKeySequence(keySequence.toString().split(",")[
+                        0]) if keySequence.count() > 0 else None
+                )
+                settingWidget.setKeySequence(SettingsManager.Get(
+                    self.settingsBase + "." + setting.key, setting.default_value))
+                settingWidget.keySequenceChanged.connect(
+                    lambda sequence=None: [
+                        SettingsManager.Set(
+                            self.settingsBase + "." + setting.key, sequence.toString()),
+                        setting.callback()
+                    ]
+                )
+                resetButton.clicked.connect(
+                    lambda bt=None: [
+                        settingWidget.setKeySequence(setting.default_value),
+                        setting.callback()
+                    ]
+                )
+            case "textbox" | "password":
+                settingWidget = QLineEdit()
+                if setting.setting_type == "password":
+                    settingWidget.setEchoMode(QLineEdit.EchoMode.Password)
+                settingWidget.textChanged.connect(
+                    lambda val=None: SettingsManager.Set(self.settingsBase + "." + setting.key, settingWidget.text()))
+                settingWidget.setText(SettingsManager.Get(
+                    self.settingsBase + "." + setting.key, setting.default_value))
+                resetButton.clicked.connect(
+                    lambda bt=None: [
+                        settingWidget.setText(setting.default_value),
+                        setting.callback()
+                    ]
+                )
+            case _:
+                settingWidget, buttonAction = self.CreateOtherSettings(setting)
+                resetButton.clicked.connect(buttonAction)
+
+        if setting.tooltip:
+            settingWidget.setToolTip('\n'.join(textwrap.wrap(setting.tooltip, 40)))
+
+        self.layout().addWidget(settingWidget, lastRow, 1)
+        self.layout().addWidget(resetButton, lastRow, 2)
+
+    @abstractmethod
+    def CreateOtherSettings(self, setting: SettingsItem) -> tuple[QWidget, Callable[..., None]]:
         pass
 
 
