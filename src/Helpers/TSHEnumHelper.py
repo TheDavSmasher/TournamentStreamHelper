@@ -10,7 +10,7 @@ class SuperEnum(Enum):
     def __init__(self, _, nested=None):
         self._parent_enum: SuperEnum | None = None
         if nested:
-            if not isinstance(nested, type(self)):
+            if not isinstance(list(nested)[0], SuperEnum):
                 raise TypeError(f"Nested enum must be a SuperEnum, got {type(nested)}.")
             for enm in nested:
                 setattr(self, enm.name, enm)
