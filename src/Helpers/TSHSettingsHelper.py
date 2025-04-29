@@ -14,7 +14,7 @@ class SettingsItem:
     label: str
     context: str
     key: str
-    setting_type: str
+    settingType: str
     defaultValue: Any
     callback: Callable[[], None] = lambda: None
     tooltip: str = None
@@ -44,7 +44,7 @@ class AbstractSettingsWidget(QWidget, ABC):
 
         resetButton = QPushButton(QApplication.translate(setting.context, "Default"))
 
-        match setting.setting_type:
+        match setting.settingType:
             case "checkbox":
                 settingWidget = QCheckBox()
                 settingWidget.setChecked(SettingsManager.Get(
@@ -77,7 +77,7 @@ class AbstractSettingsWidget(QWidget, ABC):
                 )
             case "textbox" | "password":
                 settingWidget = QLineEdit()
-                if setting.setting_type == "password":
+                if setting.settingType == "password":
                     settingWidget.setEchoMode(QLineEdit.EchoMode.Password)
                 settingWidget.textChanged.connect(
                     lambda val=None: SettingsManager.Set(self.settingsBase + "." + setting.key, settingWidget.text()))
