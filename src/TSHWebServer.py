@@ -30,7 +30,7 @@ class WebServer(QThread):
         async_mode='threading'
     )
     app.config['CORS_HEADERS'] = 'Content-Type'
-    actions = None
+    actions: WebServerActions = None
 
     def __init__(self, parent=None, stageWidget=None, commentaryWidget: TSHCommentaryWidget = None) -> None:
         super().__init__(parent)
@@ -57,6 +57,14 @@ class WebServer(QThread):
 
     def emit(self, event, *args, **kwargs):
         WebServer.socketio.emit(event, *args, **kwargs)
+
+    @app.route('/obs_connect')
+    def obs_ws_connect():
+        return WebServer.actions.obsConnect()
+
+    @socketio.on('obs_connect')
+    def ws_obs_ws_connect(message):
+        emit('obs_connect', WebServer.actions.obsConnect())
 
     @app.route('/ruleset')
     def ruleset():
