@@ -33,6 +33,9 @@ class WebServerActions(QThread):
     def program_state(self):
         return StateManager.state
 
+    def obsConnect(self):
+        return self.obs.connect()
+
     def ruleset(self):
         data = {}
 
