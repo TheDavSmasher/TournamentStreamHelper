@@ -1,95 +1,77 @@
-import sys
-from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 from .SettingsWidget import SettingsWidget
+from ..Helpers.TSHSettingsHelper import GenericSettingsWindow, SettingsGroup, SettingsItem
 from ..TSHHotkeys import TSHHotkeys
 
 
-class TSHSettingsWindow(QDialog):
+class TSHSettingsWindow(GenericSettingsWindow[SettingsWidget]):
     def __init__(self, parent=None):
-        super().__init__(parent=parent)
+        settings: list[SettingsGroup] = [
+            SettingsGroup(
+                "General",
+                SettingsWidget("general", [
+                    SettingsItem(),
+                    SettingsItem(),
+                    SettingsItem(),
+                    SettingsItem(),
+                    SettingsItem()
+                ])
+            ),
+            SettingsGroup(
+                "Hotkeys",
+                SettingsWidget("hotkeys", [])
+            ),
+            SettingsGroup(
+                "Bluesky",
+                SettingsWidget("bsky_account", [
+                    SettingsItem(),
+                ])
+            )
+        ]
+        super().__init__("Settings", settings, parent=parent)
 
     def UiMounted(self):
-        self.setWindowTitle(QApplication.translate("Settings", "Settings"))
-
-        # Create a list widget for the selection
-        self.selection_list = QListWidget()
-        self.selection_list.currentRowChanged.connect(
-            self.on_selection_changed)
-
-        # Create a stacked widget for the settings widgets
-        self.settings_stack = QStackedWidget()
-
-        # Create a scroll area for the settings stack
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setWidget(self.settings_stack)
-
-        # Create a splitter for the selection and settings
-        splitter = QSplitter(Qt.Horizontal)
-        splitter.addWidget(self.selection_list)
-        splitter.addWidget(scroll_area)
-
-        # Set the layout for the dialog
-        layout = QVBoxLayout()
-        layout.addWidget(splitter)
-        self.setLayout(layout)
-
         # Add general settings
-        generalSettings = []
-
-        generalSettings.append((
+        generalSettings = [(
             QApplication.translate(
                 "settings.general", "Enable profanity filter"),
             "profanity_filter",
             "checkbox",
             True
-        ))
-
-        generalSettings.append((
+        ), (
             QApplication.translate(
                 "settings.control_score_from_stage_strike", "Enable score control from the stage striking app"),
             "control_score_from_stage_strike",
             "checkbox",
             True
-        ))
-
-        generalSettings.append((
+        ), (
             QApplication.translate(
                 "settings.disable_autoupdate", "Disable automatic set updating for the scoreboard"),
             "disable_autoupdate",
             "checkbox",
             False
-        ))
-
-        generalSettings.append((
+        ), (
             QApplication.translate(
                 "settings.disable_export", "Disable TSH file exporting"),
             "disable_export",
             "checkbox",
             False
-        ))
-        
-        generalSettings.append((
+        ), (
             QApplication.translate(
-                "settings.disable_overwrite", "Do not override existing values in local_players.csv (takes effect on next restart)"),
+                "settings.disable_overwrite",
+                "Do not override existing values in local_players.csv (takes effect on next restart)"),
             "disable_overwrite",
             "checkbox",
             False
-        ))
-
-        self.add_setting_widget(QApplication.translate(
-            "settings", "General"), SettingsWidget("general", generalSettings))
+        )]
 
         # Add hotkey settings
-        hotkeySettings = []
-
-        hotkeySettings.append((
+        hotkeySettings = [(
             QApplication.translate("settings.hotkeys", "Enable hotkeys"),
             "hotkeys_enabled",
             "checkbox",
             True
-        ))
+        )]
 
         key_names = {
             "load_set": QApplication.translate("settings.hotkeys", "Load set"),
@@ -109,27 +91,21 @@ class TSHSettingsWindow(QDialog):
                 value,
                 TSHHotkeys.instance.ReloadHotkeys
             ))
-
-        self.add_setting_widget(QApplication.translate(
-            "settings", "Hotkeys"), SettingsWidget("hotkeys", hotkeySettings))
             
         # Add Bluesky settings
-        bskySettings = []
-        bskySettings.append((
+        bskySettings = [(
             QApplication.translate(
                 "settings.bsky", "Host server"),
             "host",
             "textbox",
             "https://bsky.social"
-        ))
-        bskySettings.append((
+        ), (
             QApplication.translate(
                 "settings.bsky", "Bluesky Handle"),
             "username",
             "textbox",
             ""
-        ))
-        bskySettings.append((
+        ), (
             QApplication.translate(
                 "settings.bsky", "Application Password"),
             "app_password",
@@ -137,33 +113,13 @@ class TSHSettingsWindow(QDialog):
             "",
             None,
             QApplication.translate(
-                "settings.bsky", "You can get an app password by going into your Bluesky settings -> Privacy & Security") + "\n" +
-                QApplication.translate(
-                "settings.bsky", "Please note that said app password will be stored in plain text on your computer") + "\n\n" +
-                QApplication.translate(
+                "settings.bsky",
+                "You can get an app password by going into your Bluesky settings -> Privacy & Security") + "\n" +
+            QApplication.translate(
+                "settings.bsky",
+                "Please note that said app password will be stored in plain text on your computer") + "\n\n" +
+            QApplication.translate(
                 "settings.bsky", "Do not use your regular account password!").upper()
-        ))
-        
-        self.add_setting_widget(QApplication.translate(
-            "settings", "Bluesky"), SettingsWidget("bsky_account", bskySettings))
+        )]
 
-        self.resize(1000, 500)
-        QApplication.processEvents()
-        splitter.setSizes([200, self.width()-200])
 
-    def on_selection_changed(self, index):
-        # Get the selected item and its associated widget
-        item = self.selection_list.item(index)
-        widget = item.data(Qt.UserRole)
-
-        # Set the current widget in the stack
-        self.settings_stack.setCurrentWidget(widget)
-
-    def add_setting_widget(self, name, widget):
-        # Create a list widget item for the selection
-        item = QListWidgetItem(name)
-        item.setData(Qt.UserRole, widget)
-        self.selection_list.addItem(item)
-
-        # Add the setting widget to the stack
-        self.settings_stack.addWidget(widget)
