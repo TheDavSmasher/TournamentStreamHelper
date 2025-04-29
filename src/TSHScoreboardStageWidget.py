@@ -54,7 +54,7 @@ class TSHScoreboardStageWidget(QDockWidget):
 
         self.signals = TSHScoreboardStageWidgetSignals()
 
-        self.obsSettings = TSHOBSSettingsWindow()
+        self.obsSettings = TSHOBSSettingsWindow(self)
 
         uic.loadUi(TSHResolve("src/layout/TSHScoreboardStage.ui"), self.innerWidget)
 
@@ -169,6 +169,8 @@ class TSHScoreboardStageWidget(QDockWidget):
 
         self.stagesModel.dataChanged.connect(
             lambda topLeft, bottomRight: self.update_cloned_items())
+
+        self.obsSettings.UiMounted()
 
         # TSHTournamentDataProvider.instance.signals.tournament_changed.connect()
         # load tournament ruleset
