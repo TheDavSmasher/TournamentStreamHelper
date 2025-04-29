@@ -61,5 +61,5 @@ class TSHSettingsWindow(GenericSettingsWindow[SettingsWidget]):
         }
 
         for _, (setting, value) in enumerate(TSHHotkeys.instance.keys.items()):
-            hotkeySettings.append(SettingsItem(key_names[setting], "settings.hotkeys", setting, "hotkey", value, TSHHotkeys.instance.ReloadHotkeys()))
+            hotkeySettings.append(SettingsItem(key_names[setting], "settings.hotkeys", setting, "hotkey", value, TSHHotkeys.instance.ReloadHotkeys))
         return hotkeySettings
