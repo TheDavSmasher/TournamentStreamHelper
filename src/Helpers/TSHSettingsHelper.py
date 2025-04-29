@@ -55,20 +55,18 @@ class SettingsWidget(QWidget):
                 settingWidget = QCheckBox()
                 settingWidget.setChecked(self.GetSetting(setting))
                 settingWidget.stateChanged.connect(
-                    lambda val=None: self.SetSetting(setting.key, settingWidget.isChecked()))
+                    lambda _: self.SetSetting(setting.key, settingWidget.isChecked()))
                 resetButton.clicked.connect(
                     lambda bt=None: settingWidget.setChecked(setting.defaultValue))
             case "hotkey":
                 settingWidget = QKeySequenceEdit()
                 settingWidget.setKeySequence(self.GetSetting(setting))
                 settingWidget.keySequenceChanged.connect(
-                    lambda keySequence:
-                    settingWidget.setKeySequence(keySequence.toString().split(",")[
-                        0]) if keySequence.count() > 0 else None
-                )
-                settingWidget.keySequenceChanged.connect(
-                    lambda sequence=None: [
-                        self.SetSetting(setting.key, sequence.toString()),
+                    lambda keySequence: [
+                        settingWidget.setKeySequence(
+                            keySequence.toString().split(",")[0]
+                        ) if keySequence.count() > 0 else None,
+                        self.SetSetting(setting.key, keySequence.toString()),
                         setting.callback()
                     ]
                 )
@@ -84,7 +82,7 @@ class SettingsWidget(QWidget):
                     settingWidget.setEchoMode(QLineEdit.EchoMode.Password)
                 settingWidget.setText(self.GetSetting(setting))
                 settingWidget.textChanged.connect(
-                    lambda val=None: self.SetSetting(setting.key, settingWidget.text()))
+                    lambda _: self.SetSetting(setting.key, settingWidget.text()))
                 resetButton.clicked.connect(
                     lambda bt=None: [
                         settingWidget.setText(setting.defaultValue),
