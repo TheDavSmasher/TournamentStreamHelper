@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from dataclasses import dataclass
 from typing import Any, TypeVar, Generic
 
@@ -17,7 +17,7 @@ class SettingsItem:
     tooltip: str = None
 
 
-class AbstractSettingsWidget(QWidget):
+class AbstractSettingsWidget(QWidget, ABC):
     def __init__(self, settingsBase="", settings: list[SettingsItem] = []):
         super().__init__()
 
