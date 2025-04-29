@@ -21,7 +21,7 @@ class SettingsItem:
 
 
 class AbstractSettingsWidget(QWidget, ABC):
-    def __init__(self, settingsBase="", settings=None):
+    def __init__(self, settingsBase="", settings: list[SettingsItem] = None):
         super().__init__()
 
         if settings is None:
