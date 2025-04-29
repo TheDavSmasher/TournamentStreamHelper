@@ -89,6 +89,18 @@ class SettingsWidget(QWidget):
                         setting.callback()
                     ]
                 )
+            case "integer":
+                settingWidget = QSpinBox()
+                settingWidget.setValue(self.GetSetting(setting))
+                settingWidget.valueChanged.connect(
+                    lambda _: self.SetSetting(setting.key, settingWidget.value())
+                )
+                resetButton.clicked.connect(
+                    lambda bt=None: [
+                        settingWidget.setValue(setting.defaultValue),
+                        setting.callback()
+                    ]
+                )
             case _:
                 raise Exception("Invalid setting type")
 
