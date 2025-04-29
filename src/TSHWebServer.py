@@ -64,7 +64,7 @@ class WebServer(QThread):
 
     @socketio.on('obs_connect')
     def ws_obs_ws_connect(message):
-        emit('obs_connect', WebServer.actions.obsConnect())
+        emit('obs_connect', WebServer.actions.obsConnect(), json=True)
 
     @app.route('/ruleset')
     def ruleset():
