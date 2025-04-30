@@ -1,4 +1,6 @@
 import traceback
+from typing import TypeVar
+
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
@@ -7,7 +9,6 @@ import json
 import orjson
 import requests
 
-from src.Helpers.TSHLocaleHelper import TSHLocaleHelper
 from src.TSHStageStrikeLogic import TSHStageStrikeLogic
 from .Helpers.TSHDirHelper import TSHResolve
 from .Helpers.TSHDictHelper import deep_get
@@ -65,75 +66,75 @@ class TSHScoreboardStageWidget(QDockWidget):
         self.neutralModel = QStandardItemModel()
         self.counterpickModel = QStandardItemModel()
 
-        self.rulesetsBox = self.findChild(QComboBox, "rulesetSelect")
+        self.rulesetsBox = self.getChild(QComboBox, "rulesetSelect")
         self.rulesetsBox.activated.connect(self.LoadRuleset)
 
-        self.stagesView = self.findChild(QListView, "allStages")
+        self.stagesView = self.getChild(QListView, "allStages")
         self.stagesView.setIconSize(QSize(64, 64))
 
-        self.stagesNeutral = self.findChild(QListView, "neutralStages")
+        self.stagesNeutral = self.getChild(QListView, "neutralStages")
         self.stagesNeutral.setIconSize(QSize(64, 64))
 
-        self.stagesCounterpick = self.findChild(QListView, "counterpickStages")
+        self.stagesCounterpick = self.getChild(QListView, "counterpickStages")
         self.stagesCounterpick.setIconSize(QSize(64, 64))
 
-        self.rulesetName = self.findChild(QLineEdit, "rulesetName")
+        self.rulesetName = self.getChild(QLineEdit, "rulesetName")
         self.rulesetName.textEdited.connect(self.ExportCurrentRuleset)
 
-        self.btAddNeutral = self.findChild(QPushButton, "btAddNeutral")
+        self.btAddNeutral = self.getChild(QPushButton, "btAddNeutral")
         self.btAddNeutral.clicked.connect(
             lambda x=None, view=self.stagesNeutral: self.AddStage(view))
         self.btAddNeutral.setIcon(QIcon("./assets/icons/arrow_right.svg"))
 
-        self.btRemoveNeutral = self.findChild(QPushButton, "btRemoveNeutral")
+        self.btRemoveNeutral = self.getChild(QPushButton, "btRemoveNeutral")
         self.btRemoveNeutral.clicked.connect(
             lambda: self.RemoveStage(self.stagesNeutral))
         self.btRemoveNeutral.setIcon(QIcon("./assets/icons/arrow_left.svg"))
 
-        self.btAddCounterpick = self.findChild(QPushButton, "btAddCounterpick")
+        self.btAddCounterpick = self.getChild(QPushButton, "btAddCounterpick")
         self.btAddCounterpick.clicked.connect(
             lambda x=None, view=self.stagesCounterpick: self.AddStage(view))
         self.btAddCounterpick.setIcon(QIcon("./assets/icons/arrow_right.svg"))
 
-        self.btRemoveCounterpick = self.findChild(
+        self.btRemoveCounterpick = self.getChild(
             QPushButton, "btRemoveCounterpick")
         self.btRemoveCounterpick.clicked.connect(
             lambda: self.RemoveStage(self.stagesCounterpick))
         self.btRemoveCounterpick.setIcon(
             QIcon("./assets/icons/arrow_left.svg"))
 
-        self.noDSR = self.findChild(QRadioButton, "noDSR")
+        self.noDSR = self.getChild(QRadioButton, "noDSR")
         self.noDSR.clicked.connect(self.ExportCurrentRuleset)
-        self.DSR = self.findChild(QRadioButton, "DSR")
+        self.DSR = self.getChild(QRadioButton, "DSR")
         self.DSR.clicked.connect(self.ExportCurrentRuleset)
-        self.MDSR = self.findChild(QRadioButton, "MDSR")
+        self.MDSR = self.getChild(QRadioButton, "MDSR")
         self.MDSR.clicked.connect(self.ExportCurrentRuleset)
 
-        self.strikeOrder = self.findChild(QLineEdit, "strikeOrder")
+        self.strikeOrder = self.getChild(QLineEdit, "strikeOrder")
         self.strikeOrder.textEdited.connect(self.ExportCurrentRuleset)
 
-        self.fixedBanCount = self.findChild(QRadioButton, "fixedBanCount")
+        self.fixedBanCount = self.getChild(QRadioButton, "fixedBanCount")
         self.fixedBanCount.clicked.connect(self.ExportCurrentRuleset)
-        self.variableBanCount = self.findChild(
+        self.variableBanCount = self.getChild(
             QRadioButton, "variableBanCount")
         self.variableBanCount.clicked.connect(self.ExportCurrentRuleset)
 
-        self.banCount = self.findChild(QSpinBox, "banCount")
+        self.banCount = self.getChild(QSpinBox, "banCount")
         self.banCount.valueChanged.connect(self.ExportCurrentRuleset)
 
-        self.banCountByMaxGames = self.findChild(
+        self.banCountByMaxGames = self.getChild(
             QLineEdit, "banCountByMaxGames")
         self.banCountByMaxGames.textEdited.connect(self.ExportCurrentRuleset)
 
-        self.webappLabel = self.findChild(QLabel, "labelIp")
+        self.webappLabel = self.getChild(QLabel, "labelIp")
         self.webappLabel.setText(
             QApplication.translate("app", "Open {0} in a browser to stage strike.").format(f"<a href='http://{self.GetIP()}:5000'>http://{self.GetIP()}:5000</a>"))
         self.webappLabel.setOpenExternalLinks(True)
 
-        self.labelValidation = self.findChild(QLabel, "labelValidation")
+        self.labelValidation = self.getChild(QLabel, "labelValidation")
         self.labelValidation.setText("")
 
-        self.obs = self.findChild(QPushButton, "btOBS")
+        self.obs = self.getChild(QPushButton, "btOBS")
         self.obs.setIcon(QIcon('assets/icons/settings.svg'))
         self.obs.setIconSize(QSize(24, 24))
         self.obs.setFixedSize(QSize(48, 32))
@@ -141,7 +142,7 @@ class TSHScoreboardStageWidget(QDockWidget):
             QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
         self.obs.clicked.connect(lambda: self.obsSettings.show())
 
-        self.obsLabel = self.findChild(QLabel, "labelObs")
+        self.obsLabel = self.getChild(QLabel, "labelObs")
         self.obsLabel.setText(
             QApplication.translate("app", "Configure OBS Websocket actions for Stage Striking App"))
         self.obsLabel.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
@@ -155,11 +156,11 @@ class TSHScoreboardStageWidget(QDockWidget):
         StateManager.Set(f"score.ruleset", None)
         self.ExportCurrentRuleset()
 
-        self.btSave = self.findChild(QPushButton, "btSave")
+        self.btSave = self.getChild(QPushButton, "btSave")
         self.btSave.setIcon(QIcon('assets/icons/save.svg'))
-        self.btDelete = self.findChild(QPushButton, "btDelete")
+        self.btDelete = self.getChild(QPushButton, "btDelete")
         self.btDelete.setIcon(QIcon('assets/icons/cancel.svg'))
-        self.btClear = self.findChild(QPushButton, "btClear")
+        self.btClear = self.getChild(QPushButton, "btClear")
         self.btClear.setIcon(QIcon('assets/icons/undo.svg'))
 
         self.rulesetName.textChanged.connect(self.UpdateBottomButtons)
@@ -174,6 +175,11 @@ class TSHScoreboardStageWidget(QDockWidget):
 
         # TSHTournamentDataProvider.instance.signals.tournament_changed.connect()
         # load tournament ruleset
+    
+    T = TypeVar("T")
+    
+    def getChild(self, child_type: type[T], child_name: str) -> T:
+        return self.findChild(child_type, child_name)
 
     def update_cloned_items(self):
         neutralStages = []
