@@ -36,11 +36,18 @@ class SettingsWidget(QWidget):
         for setting in settings:
             self.AddSetting(setting)
 
-    def SetSetting(self, key: str, default):
-        SettingsManager.Set(self.settingsBase + "." + key, default)
+    def AddSetting(self, setting: SettingsItem):
+        self.AddWidgetRow([
+            QLabel(QApplication.translate(setting.context, setting.label))
+        ] + self.GetRowWidgets(setting))
 
-    def GetSetting(self, setting: SettingsItem):
-        return SettingsManager.Get(self.settingsBase + "." + setting.key, setting.defaultValue)
+    def AddWidgetRow(self, widgets: list[QWidget]):
+        lastRow = self.layoutGrid.rowCount()
+
+        i = 0
+        for widget in widgets:
+            self.layoutGrid.addWidget(widget, lastRow, i)
+            i += 1
 
     def GetRowWidgets(self, setting: SettingsItem) -> list[QWidget]:
         widgets = []
@@ -116,18 +123,11 @@ class SettingsWidget(QWidget):
 
         return widgets
 
-    def AddSetting(self, setting: SettingsItem):
-        self.AddWidgetRow([
-            QLabel(QApplication.translate(setting.context, setting.label))
-        ] + self.GetRowWidgets(setting))
+    def SetSetting(self, key: str, default):
+        SettingsManager.Set(self.settingsBase + "." + key, default)
 
-    def AddWidgetRow(self, widgets: list[QWidget]):
-        lastRow = self.layoutGrid.rowCount()
-
-        i = 0
-        for widget in widgets:
-            self.layoutGrid.addWidget(widget, lastRow, i)
-            i += 1
+    def GetSetting(self, setting: SettingsItem):
+        return SettingsManager.Get(self.settingsBase + "." + setting.key, setting.defaultValue)
 
 
 @dataclass
