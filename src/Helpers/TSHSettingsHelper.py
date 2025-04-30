@@ -37,20 +37,7 @@ class SettingsWidget(QWidget):
             self.AddSetting(setting)
 
     def AddSetting(self, setting: SettingsItem):
-        self.AddWidgetRow([
-            QLabel(QApplication.translate(setting.context, setting.label))
-        ] + self.GetRowWidgets(setting))
-
-    def AddWidgetRow(self, widgets: list[QWidget]):
         lastRow = self.layoutGrid.rowCount()
-
-        i = 0
-        for widget in widgets:
-            self.layoutGrid.addWidget(widget, lastRow, i)
-            i += 1
-
-    def GetRowWidgets(self, setting: SettingsItem) -> list[QWidget]:
-        widgets = []
 
         resetButton = QPushButton(QApplication.translate("settings", "Default"))
 
@@ -62,8 +49,6 @@ class SettingsWidget(QWidget):
                     lambda _: self.SetSetting(setting.key, settingWidget.isChecked()))
                 resetButton.clicked.connect(
                     lambda bt=None: settingWidget.setChecked(setting.defaultValue))
-                widgets.append(settingWidget)
-                widgets.append(resetButton)
             case "hotkey":
                 settingWidget = QKeySequenceEdit()
                 settingWidget.setKeySequence(self.GetSetting(setting))
@@ -82,8 +67,6 @@ class SettingsWidget(QWidget):
                         setting.callback()
                     ]
                 )
-                widgets.append(settingWidget)
-                widgets.append(resetButton)
             case "textbox" | "password":
                 settingWidget = QLineEdit()
                 if setting.settingType == "password":
@@ -97,8 +80,6 @@ class SettingsWidget(QWidget):
                         setting.callback()
                     ]
                 )
-                widgets.append(settingWidget)
-                widgets.append(resetButton)
             case "integer":
                 settingWidget = QSpinBox()
                 settingWidget.setValue(self.GetSetting(setting))
@@ -111,15 +92,22 @@ class SettingsWidget(QWidget):
                         setting.callback()
                     ]
                 )
-                widgets.append(settingWidget)
-                widgets.append(resetButton)
             case _:
                 raise Exception("Invalid setting type")
 
         if setting.tooltip:
             settingWidget.setToolTip('\n'.join(textwrap.wrap(setting.tooltip, 40)))
 
-        return widgets
+        widgets = [
+            QLabel(QApplication.translate(setting.context, setting.label)),
+            settingWidget,
+            resetButton
+        ]
+
+        i = 0
+        for widget in widgets:
+            self.layoutGrid.addWidget(widget, lastRow, i)
+            i += 1
 
     def SetSetting(self, key: str, default):
         SettingsManager.Set(self.settingsBase + "." + key, default)
