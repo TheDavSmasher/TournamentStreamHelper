@@ -28,7 +28,7 @@ class WebServerActions(QThread):
         self.stageWidget = stageWidget
         self.commentaryWidget = commentaryWidget
         self.threadPool = QThreadPool()
-        self.obs = OBSActions()
+        self.obs = OBSActions.instance
 
     def program_state(self):
         return StateManager.state

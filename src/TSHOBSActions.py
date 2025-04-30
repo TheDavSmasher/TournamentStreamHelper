@@ -35,12 +35,14 @@ class OBSCommand:
 
 
 class OBSActions:
+    instance: "OBSActions" = None
+
     def __init__(self):
         self.obs_ws = OBSWebsocketManager()
         self.commands = []
 
-    def addObsCommand(self, command: OBSCommand):
-        self.commands.append(command)
+    def updateCommands(self, commands: list):
+        self.commands = commands
 
     # data is either stage name or player number (0 for first, 1 for second)
     def emit(self, trigger: AppOption, data: str | int = None):
@@ -63,3 +65,6 @@ class OBSActions:
                 case OBSOption.TRANSFORM:
                     obs_scene, obs_source, source_transform = result
                     self.obs_ws.set_source_transform(obs_scene, obs_source, source_transform)
+
+
+OBSActions.instance = OBSActions()
