@@ -39,15 +39,14 @@ class OBSActions:
 
     def __init__(self):
         self.obs_ws = OBSWebsocketManager()
-        self.commands = []
+        self.commands: list[OBSCommand] = []
 
-    def updateCommands(self, commands: list):
+    def updateCommands(self, commands: list[OBSCommand]):
         self.commands = commands
 
     # data is either stage name or player number (0 for first, 1 for second)
     def emit(self, trigger: AppOption, data: str | int = None):
         filtered = [command for command in self.commands if command.trigger in trigger.enum_path]
-        command: OBSCommand
         for command in filtered:
             result = command.command(data)
             match command.target:
