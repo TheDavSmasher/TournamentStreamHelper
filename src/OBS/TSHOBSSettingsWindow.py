@@ -9,6 +9,7 @@ class TSHOBSSettingsWindow(GenericSettingsWindow):
                 SettingsWidget(
                     "obs_auth",
                     [
+                        SettingsItem("Enable OBS Websockets", "settings.obs", "obs_enable", "checkbox", True),
                         SettingsItem("OBS Host", "settings.obs", "obs_host", "textbox", "localhost"),
                         SettingsItem("OBS Port", "settings.obs", "obs_port", "textbox", "4455"),
                         SettingsItem("OBS Password", "settings.obs", "obs_password", "password", ""),
