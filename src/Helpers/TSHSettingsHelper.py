@@ -117,13 +117,15 @@ class SettingsWidget(QWidget):
         return widgets
 
     def AddSetting(self, setting: SettingsItem):
+        self.AddWidgetRow([
+            QLabel(QApplication.translate(setting.context, setting.label))
+        ] + self.GetRowWidgets(setting))
+
+    def AddWidgetRow(self, widgets: list[QWidget]):
         lastRow = self.layoutGrid.rowCount()
 
-        self.layoutGrid.addWidget(
-            QLabel(QApplication.translate(setting.context, setting.label)), lastRow, 0)
-
-        i = 1
-        for widget in self.GetRowWidgets(setting):
+        i = 0
+        for widget in widgets:
             self.layoutGrid.addWidget(widget, lastRow, i)
             i += 1
 
