@@ -133,7 +133,7 @@ class SettingsWidget(QWidget):
 @dataclass
 class SettingsGroup:
     name: str
-    widget: SettingsWidget
+    widget: QWidget
     context: str = "settings"
 
 
@@ -167,12 +167,11 @@ class GenericSettingsWindow(QDialog):
 
         for settingGroup in self.settings:
             item = QListWidgetItem(QApplication.translate(settingGroup.context, settingGroup.name))
-            widget = settingGroup.widget
-            item.setData(Qt.ItemDataRole.UserRole, widget)
+            item.setData(Qt.ItemDataRole.UserRole, settingGroup.widget)
             self.selection_list.addItem(item)
 
             # Add the setting widget to the stack
-            self.settings_stack.addWidget(widget)
+            self.settings_stack.addWidget(settingGroup.widget)
 
         self.resize(1000, 500)
         QApplication.processEvents()
