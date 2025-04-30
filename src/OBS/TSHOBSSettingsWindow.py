@@ -1,3 +1,4 @@
+from .TSHOBSWebsocketRulesWidget import OBSWebsocketRulesWidget
 from ..Helpers.TSHSettingsHelper import GenericSettingsWindow, SettingsGroup, SettingsItem, SettingsWidget
 
 
@@ -19,12 +20,7 @@ class TSHOBSSettingsWindow(GenericSettingsWindow):
             ),
             SettingsGroup(
                 "Websocket Rules",
-                SettingsWidget(
-                    "obs_rules",
-                    [
-                        SettingsItem("Add OBS Rule", "settings.obs", "obs_rule", "creator", None)
-                    ]
-                )
+                OBSWebsocketRulesWidget(),
             )
         ]
         super().__init__("OBS Websocket Settings", settings, parent=parent)
