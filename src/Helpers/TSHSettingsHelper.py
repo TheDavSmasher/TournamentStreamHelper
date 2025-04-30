@@ -113,8 +113,6 @@ class SettingsWidget(QWidget):
                 )
                 widgets.append(settingWidget)
                 widgets.append(resetButton)
-            case "creator":
-                settingWidget = None
             case _:
                 raise Exception("Invalid setting type")
 
