@@ -8,36 +8,33 @@ class SuperEnum(Enum):
         return obj
 
     def __init__(self, _, nested=None):
-        self._parent_enum: SuperEnum | None = None
+        self._parent: SuperEnum | None = None
         if nested:
             if not isinstance(list(nested)[0], SuperEnum):
                 raise TypeError(f"Nested enum must be a SuperEnum, got {type(nested)}.")
             for enm in nested:
                 setattr(self, enm.name, enm)
-                enm._parent_enum = self
+                enm._parent = self
 
     def is_submember_of(self, parent_enum):
         return self == parent_enum
 
     def __eq__(self, other):
-        return self is other or self._parent_enum == other
+        return self is other or self._parent == other
 
     def __hash__(self):
-        return hash(self._parent_enum or self)
+        return hash(self._parent or self)
 
     @property
     def enum_path(self):
         path = [self]
-        current = self._parent_enum
+        current = self._parent
         while current is not None:
             path.append(current)
-            current = current._parent_enum
+            current = current._parent
         return path
 
     @property
     def top(self):
         """Return the topmost parent for this enum member."""
-        current = self
-        while current._parent_enum is not None:
-            current = current._parent_enum
-        return current
+        return self.enum_path[-1]
