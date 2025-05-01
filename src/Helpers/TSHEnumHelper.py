@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, EnumMeta
 
 
 class SuperEnum(Enum):
@@ -7,11 +7,12 @@ class SuperEnum(Enum):
         obj._value_ = value
         return obj
 
-    def __init__(self, _, nested=None):
+    def __init__(self, _, nested: EnumMeta = None):
         self._parent: SuperEnum | None = None
         if nested:
-            if not isinstance(list(nested)[0], SuperEnum):
+            if not issubclass(nested, SuperEnum):
                 raise TypeError(f"Nested enum must be a SuperEnum, got {type(nested)}.")
+            enm: SuperEnum
             for enm in nested:
                 setattr(self, enm.name, enm)
                 enm._parent = self
