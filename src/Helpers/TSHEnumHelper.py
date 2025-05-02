@@ -49,3 +49,6 @@ class SuperEnum(Enum, metaclass=SuperEnumMeta):
     def top(self):
         """Return the topmost parent for this enum member."""
         return self.enum_path[-1]
+
+    def nesting_level(self, up_to: 'SuperEnum' = None):
+        return self.enum_path.index(up_to) if up_to in self.enum_path else 0
