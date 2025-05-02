@@ -5,10 +5,10 @@ from .OBS.TSHOBSWebsockets import OBSWebsocketManager
 
 
 class MetaOption(SuperEnum):
-    CONFIRM = 0
-    UNDO = 1
-    REDO = 2
-    RESTART = 3
+    CONFIRM = "confirm"
+    UNDO = "undo"
+    REDO = "redo"
+    RESTART = "restart"
 
 
 class AppOption(SuperEnum):
